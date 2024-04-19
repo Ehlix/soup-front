@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    --test: rgb(0, 217, 255);
     --background: 6 11 9;
     --foreground: 255 255 255;
 
@@ -44,7 +43,6 @@
   }
 
   .dark {
-    --test: rgb(5, 31, 17);
     --background: 255 115 179;
     --foreground: 255 115 179;
 
@@ -76,10 +74,10 @@
 
 @layer base {
   * {
-    @apply box-border border-border font-normal;
+    @apply m-0 box-border border-border p-0 font-normal;
   }
   body {
-    @apply flex h-[100vh] w-full bg-background text-foreground;
+    @apply flex h-dvh w-dvw overflow-x-hidden overflow-y-hidden bg-background text-foreground;
     font-family:
       Inter,
       -apple-system,
@@ -100,6 +98,25 @@
     -moz-osx-font-smoothing: grayscale;
   }
   #root {
-    @apply flex h-fit min-h-full w-full;
+    @apply flex h-full min-h-full w-full overflow-y-scroll;
+  }
+
+  * {
+    scrollbar-color: theme(colors.border) theme(colors.background);
+    scrollbar-width: thin;
+  }
+
+  @media (max-width: 767px) {
+    ::-webkit-scrollbar {
+      height: 10px;
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border;
   }
 }
