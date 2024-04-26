@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 // type Result<T extends string | string[]> = [
 //   T | null,
 //   React.Dispatch<React.SetStateAction<T | null>>,
 // ];
 
-export const useLoadImage = <T extends string>(
-  src: T,
-): T | null => {
+export const useLoadImage = <T extends string>(src: T): T | null => {
   const [loadedImages, setLoadedImages] = useState<T | null>(null);
 
   if (!src) return null;

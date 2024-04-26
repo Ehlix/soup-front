@@ -1,15 +1,15 @@
-import axios, { AxiosResponse } from "axios";
-import api from ".";
+import axios, { AxiosResponse } from 'axios';
+import api from '.';
 
 type Method =
-  | "get"
-  | "post"
-  | "put"
-  | "delete"
-  | "patch"
-  | "options"
-  | "head"
-  | "trace";
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'delete'
+  | 'patch'
+  | 'options'
+  | 'head'
+  | 'trace';
 
 type Request = {
   url: string;
@@ -20,7 +20,7 @@ type Request = {
 const request = ({ url, data, method }: Request) => {
   const controller = new AbortController();
   return api({
-    method: method ?? "get",
+    method: method ?? 'get',
     url,
     data,
     signal: controller?.signal,
@@ -31,8 +31,8 @@ const request = ({ url, data, method }: Request) => {
 const reqWithoutInterceptor = ({ url, data, method }: Request) => {
   const controller = new AbortController();
   return axios({
-    baseURL: "http://localhost:9000",
-    method: method ?? "get",
+    baseURL: 'http://localhost:9000',
+    method: method ?? 'get',
     url,
     data,
     signal: controller?.signal,
@@ -44,9 +44,9 @@ export const signIn = (
   data: SignInParams,
 ): Promise<AxiosResponse<AuthResponse>> => {
   return request({
-    url: "/auth/login",
+    url: '/auth/login',
     data,
-    method: "post",
+    method: 'post',
   });
 };
 
@@ -54,20 +54,20 @@ export const signUp = (
   data: SignInParams,
 ): Promise<AxiosResponse<AuthResponse>> => {
   return request({
-    url: "/auth/register",
+    url: '/auth/register',
     data,
-    method: "post",
+    method: 'post',
   });
 };
 
 export const signOut = (): Promise<AxiosResponse<boolean>> => {
-  return request({ url: "/auth/logout" });
+  return request({ url: '/auth/logout' });
 };
 
 export const getUsers = () => {
-  return request({ url: "/users" });
+  return request({ url: '/users' });
 };
 
 export const refreshToken = (): Promise<AxiosResponse<AuthResponse>> => {
-  return reqWithoutInterceptor({ url: "/auth/refresh" });
+  return reqWithoutInterceptor({ url: '/auth/refresh' });
 };

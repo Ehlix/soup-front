@@ -5,18 +5,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Link } from "@tanstack/react-router";
+} from '@/components/ui/Dialog';
+import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
+import { Link } from '@tanstack/react-router';
 
-export const CardLens = (props: { children: React.ReactNode; card: Res; className?: string }) => {
+export const CardLens = (props: {
+  children: React.ReactNode;
+  card: Res;
+  className?: string;
+}) => {
   return (
     <Dialog>
-      <DialogTrigger className={cn("h-full w-full", props.className)}>{props.children}</DialogTrigger>
+      <DialogTrigger className={cn('h-full w-full', props.className)}>
+        {props.children}
+      </DialogTrigger>
       <DialogContent className="min-w-[90dvw] p-0">
         <div className="bg-mc-1 grid max-h-[90dvh] grid-rows-[auto_minmax(0,1fr)_auto] rounded">
-          <DialogHeader className=" flex p-2 flex-row items-center gap-2 pr-16">
+          <DialogHeader className=" flex flex-row items-center gap-2 p-2 pr-16">
             <Link to={`/${props.card.id}/pictures/all`}>
               <Avatar>
                 <AvatarImage src={props.card.userProfile.avatar} />
@@ -30,9 +36,9 @@ export const CardLens = (props: { children: React.ReactNode; card: Res; classNam
               <DialogDescription>{props.card.description}</DialogDescription>
             </div>
           </DialogHeader>
-          <div className="relative p-2 pt-0 z-10 flex flex-col items-center gap-2 overflow-y-auto">
+          <div className="relative z-10 flex flex-col items-center gap-2 overflow-y-auto p-2 pt-0">
             {props.card.urls.map((url) => (
-              <div key={url + Math.random()} className="w-full max-h-full">
+              <div key={url + Math.random()} className="max-h-full w-full">
                 <img
                   src={url}
                   alt={props.card.title}

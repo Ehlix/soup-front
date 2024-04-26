@@ -1,8 +1,8 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { signInSchema, type SignInSchema } from "@/validation/authSchema";
-import { Button } from "@/components/ui/Button";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { signInSchema, type SignInSchema } from '@/validation/authSchema';
+import { Button } from '@/components/ui/Button';
 import {
   Form,
   FormControl,
@@ -10,8 +10,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/Form";
-import { Input } from "@/components/ui/Input";
+} from '@/components/ui/Form';
+import { Input } from '@/components/ui/Input';
 
 type Props = {
   onSubmit: (values: SignInSchema) => void;
@@ -21,8 +21,8 @@ export const SignIn = ({ onSubmit }: Props) => {
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 

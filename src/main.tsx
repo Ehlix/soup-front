@@ -1,22 +1,17 @@
-import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "@/assets/index.css";
-import UserStore from "./store/userStore";
-import { createContext } from "react";
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import ReactDOM from 'react-dom/client';
+import '@/assets/index.css';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { createCtx, connectLogger } from '@reatom/framework';
+import { reatomContext } from '@reatom/npm-react';
+import { routeTree } from './routeTree.gen';
 
-import { routeTree } from './routeTree.gen'
-const router = createRouter({ routeTree })
+const router = createRouter({ routeTree });
 
-const userStore = new UserStore();
-export const Context = createContext({
-  userStore,
-});
+const ctx = createCtx();
+connectLogger(ctx);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Context.Provider value={{ userStore }}>
-    <QueryClientProvider client={new QueryClient()}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </Context.Provider>,
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <reatomContext.Provider value={ctx}>
+    <RouterProvider router={router} />
+  </reatomContext.Provider>,
 );

@@ -11,12 +11,20 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AuthImport } from './routes/auth'
 import { Route as UserImport } from './routes/$user'
 import { Route as IndexImport } from './routes/index'
+import { Route as UserFollowingsImport } from './routes/$user/followings'
+import { Route as UserFollowersImport } from './routes/$user/followers'
 import { Route as UserAboutImport } from './routes/$user/about'
 import { Route as UserPicturesFolderImport } from './routes/$user/pictures/$folder'
 
 // Create/Update Routes
+
+const AuthRoute = AuthImport.update({
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const UserRoute = UserImport.update({
   path: '/$user',
@@ -26,6 +34,16 @@ const UserRoute = UserImport.update({
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const UserFollowingsRoute = UserFollowingsImport.update({
+  path: '/followings',
+  getParentRoute: () => UserRoute,
+} as any)
+
+const UserFollowersRoute = UserFollowersImport.update({
+  path: '/followers',
+  getParentRoute: () => UserRoute,
 } as any)
 
 const UserAboutRoute = UserAboutImport.update({
@@ -50,8 +68,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserImport
       parentRoute: typeof rootRoute
     }
+    '/auth': {
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
     '/$user/about': {
       preLoaderRoute: typeof UserAboutImport
+      parentRoute: typeof UserImport
+    }
+    '/$user/followers': {
+      preLoaderRoute: typeof UserFollowersImport
+      parentRoute: typeof UserImport
+    }
+    '/$user/followings': {
+      preLoaderRoute: typeof UserFollowingsImport
       parentRoute: typeof UserImport
     }
     '/$user/pictures/$folder': {
@@ -65,7 +95,13 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  UserRoute.addChildren([UserAboutRoute, UserPicturesFolderRoute]),
+  UserRoute.addChildren([
+    UserAboutRoute,
+    UserFollowersRoute,
+    UserFollowingsRoute,
+    UserPicturesFolderRoute,
+  ]),
+  AuthRoute,
 ])
 
 /* prettier-ignore-end */
