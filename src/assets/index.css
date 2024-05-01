@@ -32,6 +32,7 @@
     --ring: 100 150 200;
 
     --radius: 0.5rem;
+
     --: rgb(6, 11, 9);
     --: rgb(13, 20, 17);
     --: rgb(3, 35, 4);
@@ -97,6 +98,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  a {
+    @apply text-accent-foreground hover:text-accent-foreground/70 transition-colors flex items-center gap-1
+  }
+
   #root {
     @apply relative flex h-full min-h-full w-full overflow-y-scroll;
   }

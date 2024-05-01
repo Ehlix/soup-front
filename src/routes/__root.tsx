@@ -9,6 +9,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { reatomComponent } from '@reatom/npm-react';
+import { getImageUrl } from '@/lib/api/artworks';
+import * as model from '@/model';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
 export const Route = createRootRoute({
@@ -29,28 +33,38 @@ function Home() {
   );
 }
 
-function Navigation() {
+const Navigation = reatomComponent(({ ctx }) => {
   return (
     <div className="backdrop-blur-s sticky left-0 top-0 z-50 flex h-12 w-full items-center justify-between gap-2 bg-gradient-to-b  from-background/100 from-10% to-background/80 to-90% bg-blend-overlay">
       <Link to="/" className="[&.active]:font-bold">
         Home
       </Link>
-      <Search />
-      <Link to="/auth" className="[&.active]:font-bold">
-        Authorization
+      <Link to="/create-profile" className="[&.active]:font-bold">
+        11
       </Link>
-      <UserMenu />
+      <Search />
+      {!ctx.spy(model.isLoggedAtom) ? (
+        <Link to="/auth" className="[&.active]:font-bold">
+          Authorization
+        </Link>
+      ) : (
+        <div className="flex gap-1">
+          <Link to="/new-artwork">Create new artwork</Link>
+          <UserMenu />
+        </div>
+      )}
     </div>
   );
-}
+}, 'Navigation');
 
 function Search() {
   return (
-    <div className=" flex w-full justify-center">
+    <div className="relative flex w-full justify-center">
       <Input
-        className="w-[4.3rem] max-w-80 rounded-full border-none outline-none transition-all focus:w-full focus:backdrop-blur-md"
+        className=" peer w-[4.3rem] max-w-80 rounded-full border-none outline-none transition-all placeholder-shown:w-0 focus:w-full focus:backdrop-blur-md"
         placeholder="Search"
-      />
+      ></Input>
+      <MagnifyingGlassIcon className="pointer-events-none absolute top-2 size-5 text-muted-foreground transition-opacity peer-focus:opacity-0" />
     </div>
   );
 }
@@ -70,18 +84,21 @@ const userMenuItems = [
   },
 ];
 
-function UserMenu() {
+const UserMenu = reatomComponent(({ ctx }) => {
+  const userProfile = ctx.spy(model.sessionDataAtom)?.userProfile;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full">
         <Avatar className="size-8">
-          <AvatarImage src="https://github.com/shuding.png" />{' '}
+          <AvatarImage
+            src={getImageUrl(userProfile?.avatar, userProfile?.userId)}
+          />
           <AvatarFallback>...</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-4 w-56">
         <DropdownMenuLabel className="text-center text-lg">
-          User Name
+          {userProfile?.name}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {userMenuItems.map((item) => (
@@ -92,8 +109,13 @@ function UserMenu() {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">Sign out</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => model.logout(ctx)}
+          className="cursor-pointer"
+        >
+          Sign out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+}, 'UserMenu');

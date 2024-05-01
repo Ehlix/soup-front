@@ -11,18 +11,36 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as NewArtworkImport } from './routes/new-artwork'
+import { Route as CreateProfileImport } from './routes/create-profile'
 import { Route as AuthImport } from './routes/auth'
+import { Route as LoggedImport } from './routes/_logged'
 import { Route as UserImport } from './routes/$user'
 import { Route as IndexImport } from './routes/index'
 import { Route as UserFollowingsImport } from './routes/$user/followings'
 import { Route as UserFollowersImport } from './routes/$user/followers'
+import { Route as UserArtworksImport } from './routes/$user/artworks'
 import { Route as UserAboutImport } from './routes/$user/about'
-import { Route as UserPicturesFolderImport } from './routes/$user/pictures/$folder'
 
 // Create/Update Routes
 
+const NewArtworkRoute = NewArtworkImport.update({
+  path: '/new-artwork',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CreateProfileRoute = CreateProfileImport.update({
+  path: '/create-profile',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthRoute = AuthImport.update({
   path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoggedRoute = LoggedImport.update({
+  id: '/_logged',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,13 +64,13 @@ const UserFollowersRoute = UserFollowersImport.update({
   getParentRoute: () => UserRoute,
 } as any)
 
-const UserAboutRoute = UserAboutImport.update({
-  path: '/about',
+const UserArtworksRoute = UserArtworksImport.update({
+  path: '/artworks',
   getParentRoute: () => UserRoute,
 } as any)
 
-const UserPicturesFolderRoute = UserPicturesFolderImport.update({
-  path: '/pictures/$folder',
+const UserAboutRoute = UserAboutImport.update({
+  path: '/about',
   getParentRoute: () => UserRoute,
 } as any)
 
@@ -68,12 +86,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserImport
       parentRoute: typeof rootRoute
     }
+    '/_logged': {
+      preLoaderRoute: typeof LoggedImport
+      parentRoute: typeof rootRoute
+    }
     '/auth': {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
+    '/create-profile': {
+      preLoaderRoute: typeof CreateProfileImport
+      parentRoute: typeof rootRoute
+    }
+    '/new-artwork': {
+      preLoaderRoute: typeof NewArtworkImport
+      parentRoute: typeof rootRoute
+    }
     '/$user/about': {
       preLoaderRoute: typeof UserAboutImport
+      parentRoute: typeof UserImport
+    }
+    '/$user/artworks': {
+      preLoaderRoute: typeof UserArtworksImport
       parentRoute: typeof UserImport
     }
     '/$user/followers': {
@@ -82,10 +116,6 @@ declare module '@tanstack/react-router' {
     }
     '/$user/followings': {
       preLoaderRoute: typeof UserFollowingsImport
-      parentRoute: typeof UserImport
-    }
-    '/$user/pictures/$folder': {
-      preLoaderRoute: typeof UserPicturesFolderImport
       parentRoute: typeof UserImport
     }
   }
@@ -97,11 +127,13 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   UserRoute.addChildren([
     UserAboutRoute,
+    UserArtworksRoute,
     UserFollowersRoute,
     UserFollowingsRoute,
-    UserPicturesFolderRoute,
   ]),
   AuthRoute,
+  CreateProfileRoute,
+  NewArtworkRoute,
 ])
 
 /* prettier-ignore-end */

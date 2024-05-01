@@ -9,10 +9,11 @@ import {
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
 import { Link } from '@tanstack/react-router';
+import { getImageUrl } from '@/lib/api/artworks';
 
-export const CardLens = (props: {
+export const ArtworkLens = (props: {
   children: React.ReactNode;
-  card: Res;
+  artwork: ArtworkResponse;
   className?: string;
 }) => {
   return (
@@ -20,28 +21,33 @@ export const CardLens = (props: {
       <DialogTrigger className={cn('h-full w-full', props.className)}>
         {props.children}
       </DialogTrigger>
-      <DialogContent className="min-w-[90dvw] p-0">
+      <DialogContent className="min-h-[90dvh] min-w-[90dvw] p-0">
         <div className="bg-mc-1 grid max-h-[90dvh] grid-rows-[auto_minmax(0,1fr)_auto] rounded">
           <DialogHeader className=" flex flex-row items-center gap-2 p-2 pr-16">
-            <Link to={`/${props.card.id}/pictures/all`}>
+            <Link to={`/${props.artwork.userId}/artworks`}>
               <Avatar>
-                <AvatarImage src={props.card.userProfile.avatar} />
+                <AvatarImage
+                  src={getImageUrl(
+                    props.artwork.user.userProfile.avatar,
+                    props.artwork.userId,
+                  )}
+                />
                 <AvatarFallback delayMs={600}>
-                  {props.card.userProfile.name[0]}
+                  {props.artwork.title}
                 </AvatarFallback>
               </Avatar>
             </Link>
             <div className="mx-auto flex flex-col">
-              <DialogTitle>{props.card.title}</DialogTitle>
-              <DialogDescription>{props.card.description}</DialogDescription>
+              <DialogTitle>{props.artwork.title}</DialogTitle>
+              <DialogDescription>{props.artwork.description}</DialogDescription>
             </div>
           </DialogHeader>
           <div className="relative z-10 flex flex-col items-center gap-2 overflow-y-auto p-2 pt-0">
-            {props.card.urls.map((url) => (
+            {props.artwork.files.map((url) => (
               <div key={url + Math.random()} className="max-h-full w-full">
                 <img
-                  src={url}
-                  alt={props.card.title}
+                  src={getImageUrl(url, props.artwork.userId)}
+                  alt={props.artwork.title}
                   key={url}
                   className="h-full w-full object-contain"
                 />

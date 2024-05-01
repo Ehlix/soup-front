@@ -41,7 +41,9 @@ const AvatarFallback = React.forwardRef<
       className,
     )}
     {...props}
-  />
+  >
+    <img src="/default_avatar.png" alt="avatar" />
+  </AvatarPrimitive.Fallback>
 ));
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
