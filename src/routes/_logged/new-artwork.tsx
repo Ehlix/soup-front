@@ -1,9 +1,8 @@
 import { sessionDataAtom } from '@/model';
-import { NewArtworkViews } from '@/views/newArtwork/NewArtworkViews';
 import { createCtx } from '@reatom/framework';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/new-artwork')({
+export const Route = createFileRoute('/_logged/new-artwork')({
   beforeLoad: () => {
     const ctx = createCtx();
     const userProfile = ctx.get(sessionDataAtom)?.userProfile;
@@ -13,5 +12,4 @@ export const Route = createFileRoute('/new-artwork')({
       });
     }
   },
-  component: NewArtworkViews,
 });

@@ -5,7 +5,7 @@ import { z } from 'zod';
 export const profileSchema = z.object({
   name: z.string().min(5).max(50),
   city: z.string().min(5).max(50),
-  country: z.string().min(5, { message: 'Select country' }).max(50),
+  country: z.string().min(5, { message: 'Select country' }).max(100),
   headline: z.string().min(5).max(200),
   description: z.string().min(5).max(777).optional().or(z.literal('')),
   avatar: z.string().optional(),

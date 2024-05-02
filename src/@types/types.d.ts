@@ -24,6 +24,7 @@ type UserProfile = {
   site: string;
   city: string;
   country: string;
+  description?: string;
   social?: {
     email?: string;
     twitter?: string;

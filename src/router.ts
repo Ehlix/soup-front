@@ -4,7 +4,7 @@ import { routeTree } from '@/routeTree.gen';
 export const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
-  defaultPreloadStaleTime: 0,
+  // defaultPreloadStaleTime: 0,
   // defaultErrorComponent: ({ error }) => 'error',
 });
 

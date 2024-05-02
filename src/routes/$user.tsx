@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { UserView } from '@/views/user/UserView';
 
 export const Route = createFileRoute('/$user')({
   beforeLoad: ({ params, location }) => {
@@ -7,5 +6,4 @@ export const Route = createFileRoute('/$user')({
       throw redirect({ to: `/${params.user}/artworks` });
     }
   },
-  component: UserView,
 });

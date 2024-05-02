@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createLazyFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/$user/followings')({
-  component: Followings,
+export const Route = createLazyFileRoute('/$user/followers')({
+  component: Followers,
 });
 
-function Followings() {
+function Followers() {
   return (
     <div className="grid grid-cols-6 gap-2 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1">
       {/* {users.map((user) => (

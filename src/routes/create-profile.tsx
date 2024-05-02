@@ -1,5 +1,4 @@
 import * as model from '@/model';
-import { CreateProfileView } from '@/views/createProfile/CreateProfileView';
 import { createCtx } from '@reatom/framework';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
@@ -15,5 +14,4 @@ export const Route = createFileRoute('/create-profile')({
       });
     }
   },
-  component: CreateProfileView,
 });

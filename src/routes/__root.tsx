@@ -13,6 +13,8 @@ import { reatomComponent } from '@reatom/npm-react';
 import { getImageUrl } from '@/lib/api/artworks';
 import * as model from '@/model';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
 export const Route = createRootRoute({
@@ -58,13 +60,28 @@ const Navigation = reatomComponent(({ ctx }) => {
 }, 'Navigation');
 
 function Search() {
+  const [value, setValue] = useState('');
   return (
     <div className="relative flex w-full justify-center">
       <Input
-        className=" peer w-[4.3rem] max-w-80 rounded-full border-none outline-none transition-all placeholder-shown:w-0 focus:w-full focus:backdrop-blur-md"
+        className={cn(
+          'peer max-w-80 rounded-full outline-none transition-all placeholder-shown:opacity-0 focus:w-full focus:opacity-100 focus:backdrop-blur-md',
+          {
+            'w-[4.3rem] border-none opacity-0': !value,
+          },
+        )}
         placeholder="Search"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
       ></Input>
-      <MagnifyingGlassIcon className="pointer-events-none absolute top-2 size-5 text-muted-foreground transition-opacity peer-focus:opacity-0" />
+      <MagnifyingGlassIcon
+        className={cn(
+          'pointer-events-none absolute top-2 size-5 text-muted-foreground  transition-opacity peer-focus:opacity-0',
+          {
+            'opacity-0': value,
+          },
+        )}
+      />
     </div>
   );
 }
