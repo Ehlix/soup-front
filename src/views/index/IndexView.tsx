@@ -11,14 +11,11 @@ export const IndexView = reatomComponent(({ ctx }) => {
   }
   return (
     <div className="grid grid-cols-6 gap-2 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1">
-      {ctx.spy(getArtworks.dataAtom).data.map((card) => {
-        console.log(card);
-        return (
-          <ArtworkLens key={card.id} artwork={card}>
-            <ArtworkCard artwork={card} className={cn('aspect-square')} />
-          </ArtworkLens>
-        );
-      })}
+      {ctx.spy(getArtworks.dataAtom).data.map((card) => (
+        <ArtworkLens key={card.id} artwork={card}>
+          <ArtworkCard artwork={card} className={cn('aspect-square')} />
+        </ArtworkLens>
+      ))}
     </div>
   );
 }, 'IndexView');

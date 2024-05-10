@@ -24,12 +24,13 @@ type Method =
 
 type Request = {
   url: string;
-  data?: Record<string, unknown>;
+  data?: Record<string, unknown> | FormData;
   method?: Method;
+  headers?: Record<string, string>;
 };
 
 export const request = (
-  { url, data, method }: Request,
+  { url, data, method, headers }: Request,
   controller?: AbortController,
 ) => {
   return api({
@@ -38,6 +39,7 @@ export const request = (
     data,
     signal: controller?.signal,
     withCredentials: true,
+    headers,
   });
 };
 

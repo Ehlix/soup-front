@@ -36,7 +36,12 @@ export const SignIn = ({ onSubmit }: Props) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="example@mail.com" {...field} />
+                <Input
+                  type="email"
+                  autoComplete="email"
+                  placeholder="example@mail.com"
+                  {...field}
+                />
               </FormControl>
               {/* <FormDescription>
                   This is your public display name.
@@ -52,7 +57,12 @@ export const SignIn = ({ onSubmit }: Props) => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••" {...field} />
+                <Input
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="••••••"
+                  {...field}
+                />
               </FormControl>
               {/* <FormDescription>
                   This is your public display name.

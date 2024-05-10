@@ -71,11 +71,14 @@ export const deleteArtwork = (
   );
 };
 
-const staticUrl = 'http://localhost:9000/users';
+const staticUsersUrl = 'http://localhost:9000/users';
+const staticCacheUrl = 'http://localhost:9000/cache';
 
 export const getImageUrl = (img?: string, folder?: string) => {
   if (img && folder) {
-    return `${staticUrl}${'/' + folder}/${img}`;
+    return `${staticUsersUrl}${'/' + folder}/${img}`;
+  } else if (img) {
+    return `${staticCacheUrl}/${img}`;
   } else {
     return '';
   }

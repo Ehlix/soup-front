@@ -4,7 +4,7 @@ import * as api from '.';
 export const getUserProfile = (
   userId: string,
   controller?: AbortController,
-): Promise<AxiosResponse<UserProfile>> => {
+): Promise<AxiosResponse<UserProfileResponse>> => {
   return api.request(
     {
       url: `/user-profile/?userId=${userId}`,
@@ -13,25 +13,25 @@ export const getUserProfile = (
   );
 };
 
-// export const createProfile = (
-//   data: CreateArtworkParams,
-//   controller?: AbortController,
-// ): Promise<AxiosResponse<ArtworkResponse>> => {
-//   return api.request(
-//     {
-//       url: '/user-profile/create',
-//       data,
-//       method: 'post',
-//     },
-//     controller,
-//   );
-// };
+export const createUserProfile = (
+  data: CreateUserProfileParams,
+  controller?: AbortController,
+): Promise<AxiosResponse<UserProfileResponse>> => {
+  return api.request(
+    {
+      url: '/user-profile/create',
+      data,
+      method: 'post',
+    },
+    controller,
+  );
+};
 
-// export const updateProfile = (
-//   data: UpdateArtworkParams,
+// export const updateUserProfile = (
+//   data: CreateUserProfileParams,
 //   artworkId: string,
 //   controller?: AbortController,
-// ): Promise<AxiosResponse<ArtworkResponse>> => {
+// ): Promise<AxiosResponse<UserProfileResponse>> => {
 //   return api.request(
 //     {
 //       url: `/user-profile/update?id=${artworkId}`,

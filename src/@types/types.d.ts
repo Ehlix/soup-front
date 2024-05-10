@@ -25,6 +25,7 @@ type UserProfile = {
   city: string;
   country: string;
   description?: string;
+  folders?: string[];
   social?: {
     email?: string;
     twitter?: string;
@@ -63,7 +64,7 @@ type ArtworkResponse = Artwork & {
   };
 };
 
-type ProfileResponse = UserProfile;
+type UserProfileResponse = UserProfile;
 
 type Res = Card & { user: User; userProfile: UserProfile };
 
@@ -92,7 +93,7 @@ type CreateArtworkParams = {
   files: string[];
   folders: string[];
   medium: string[];
-  subject: string[];
+  subjects: string[];
 };
 
 type UpdateArtworkParams = {
@@ -101,4 +102,23 @@ type UpdateArtworkParams = {
   folders?: string[];
   medium?: string[];
   subject?: string[];
+};
+
+type CreateUserProfileParams = {
+  name: string;
+  city: string;
+  country: string;
+  headline: string;
+  description?: string;
+  avatar?: string;
+  folders?: string[];
+  social?: string | JSON;
+};
+
+type UploadImageResponse = {
+  file: string;
+};
+
+type UploadImageParams = {
+  file: File;
 };

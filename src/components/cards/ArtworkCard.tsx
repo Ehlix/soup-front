@@ -6,10 +6,9 @@ export const ArtworkCard = (props: {
   className?: string;
   artwork: ArtworkResponse;
 }) => {
-  const image = useLoadImage(
+  const [image] = useLoadImage(
     getImageUrl(props.artwork.thumbnail, props.artwork.userId),
   );
-  // const avatar = useLoadImage(props.card.avatar || '');
 
   return (
     <div className={cn(props.className, 'group relative overflow-hidden')}>

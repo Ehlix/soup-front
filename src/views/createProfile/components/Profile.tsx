@@ -6,6 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/Form';
+import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/Input';
 import { UseFormReturn } from 'react-hook-form';
 import { ProfileSchema } from '../validation';
@@ -14,7 +15,16 @@ import { useCallback } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { type MouseEvent } from 'react';
 import { Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
-export const Profile = ({ form }: { form: UseFormReturn<ProfileSchema> }) => {
+import { uploadImage } from '@/model';
+import { getImageUrl } from '@/lib/api/artworks';
+import { reatomComponent } from '@reatom/npm-react';
+import { cn } from '@/lib/utils';
+
+type Props = {
+  form: UseFormReturn<ProfileSchema>;
+};
+
+export const Profile = reatomComponent<Props>(({ ctx, form }) => {
   const countryHandler = useCallback(
     (value: string) => {
       form.setValue('country', value, { shouldValidate: true });
@@ -22,22 +32,26 @@ export const Profile = ({ form }: { form: UseFormReturn<ProfileSchema> }) => {
     [form],
   );
 
-  const uploadAvatarHandler = (event: MouseEvent<HTMLElement>): void => {
+  const uploadAvatarHandler = async (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/jpg, image/jpeg, image/png';
-    input.onchange = () => {
+    input.onchange = async () => {
       if (!input.files) return;
       const file = input.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        if (!reader.result) return;
-        form.setValue('avatar', reader.result as string, {
-          shouldValidate: true,
-        });
-      };
+      const data = await uploadImage(ctx, file);
+      if (!data) return;
+      console.log(data);
+      form.setValue('avatar', data.data.file, { shouldValidate: true });
+      // const reader = new FileReader();
+      // reader.readAsDataURL(file);
+      // reader.onload = () => {
+      //   if (!reader.result) return;
+      //   form.setValue('avatar', reader.result as string, {
+      //     shouldValidate: true,
+      //   });
+      // };
     };
     input.click();
     return;
@@ -97,15 +111,30 @@ export const Profile = ({ form }: { form: UseFormReturn<ProfileSchema> }) => {
           <div className="relative mb-[1.38rem] flex size-[12.25rem] min-w-[12.25rem] items-center justify-center border border-border sm:order-first sm:mb-0 sm:mt-2">
             <button
               onClick={uploadAvatarHandler}
+              disabled={ctx.spy(uploadImage.statusesAtom).isPending}
               className="group relative z-10 p-2"
             >
-              <Avatar className="size-full transition-all group-hover:opacity-55 group-hover:blur-sm">
-                <AvatarImage src={form.watch('avatar')} />
+              <Avatar
+                className={cn(
+                  'size-full transition-all group-hover:opacity-55 group-hover:blur-sm',
+                  {
+                    'group blur-sm': ctx.spy(uploadImage.statusesAtom)
+                      .isPending,
+                  },
+                )}
+              >
+                <AvatarImage src={getImageUrl(form.watch('avatar'))} />
                 <AvatarFallback />
               </Avatar>
-              <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center text-lg opacity-0 transition-opacity group-hover:opacity-100">
-                Upload avatar
-              </div>
+              {ctx.spy(uploadImage.statusesAtom).isPending ? (
+                <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center text-lg transition-opacity">
+                  Loading ...
+                </div>
+              ) : (
+                <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center text-lg opacity-0 transition-opacity group-hover:opacity-100">
+                  Upload avatar
+                </div>
+              )}
             </button>
             <button
               onClick={deleteAvatarHandler}
@@ -139,7 +168,7 @@ export const Profile = ({ form }: { form: UseFormReturn<ProfileSchema> }) => {
             <FormItem>
               <FormLabel>Description about yourself</FormLabel>
               <FormControl>
-                <Input type="string" placeholder="" {...field} />
+                <Textarea placeholder="" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -148,4 +177,4 @@ export const Profile = ({ form }: { form: UseFormReturn<ProfileSchema> }) => {
       </Form>
     </div>
   );
-};
+}, 'Profile');

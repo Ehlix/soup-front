@@ -44,9 +44,7 @@ export const Preview = (props: {
           <DialogHeader className="mb-4 flex flex-row items-center gap-2 pr-16">
             <div>
               <Avatar className="size-20">
-                <AvatarImage
-                  src={getImageUrl(props.profile.avatar, props.profile.avatar)}
-                />
+                <AvatarImage src={getImageUrl(props.profile.avatar)} />
                 <AvatarFallback />
               </Avatar>
             </div>

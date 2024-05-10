@@ -1,31 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-// type Result<T extends string | string[]> = [
-//   T | null,
-//   React.Dispatch<React.SetStateAction<T | null>>,
-// ];
-
-export const useLoadImage = <T extends string>(src: T): T | null => {
+export const useLoadImage = <T extends string>(
+  src: T,
+): [T | null, React.Dispatch<React.SetStateAction<T | null>>] => {
+  const image = new Image();
+  const [imageToLoad, setImageToLoad] = useState<T | null>(src);
   const [loadedImages, setLoadedImages] = useState<T | null>(null);
+  useEffect(() => {
+    image.src = imageToLoad || '';
+  });
 
-  if (!src) return null;
-
-  if (!loadedImages) {
-    const image = new Image();
-    image.src = src;
-    image.onload = () => {
-      setLoadedImages(image.src as T);
-    };
-  }
-  // await image.decode();
-  // return image;
-  // if (typeof src === "string") {
-  //   const image = loadImage(src);
-  //   setLoadedImages(image);
-  // } else if (Array.isArray(src)) {
-  //   src.forEach((s) => {
-  //     loadImage(s);
-  //   });
-  // }
-  return loadedImages;
+  image.onload = () => {
+    setLoadedImages(image.src as T);
+  };
+  return [loadedImages, setImageToLoad];
 };
