@@ -21,8 +21,10 @@ import {
   currentSubjectDescription,
   setCurrentSubject,
 } from './model';
-import { TrashIcon, Cross2Icon } from '@radix-ui/react-icons';
+import { Cross2Icon } from '@radix-ui/react-icons';
 import { mediumList, subjectList } from '@/lib/static/artworkMeta';
+import { Textarea } from '@/components/ui/textarea';
+import { UploadImage } from './components/UploadImage';
 
 export const NewArtworkView = reatomComponent(({ ctx }) => {
   const loading = ctx.spy(uploadImage.statusesAtom).isPending;
@@ -66,70 +68,18 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
     input.click();
   };
 
-  const uploadArtworksHandler = async () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.multiple = true;
-    input.accept = 'image/jpg, image/jpeg, image/png';
-    input.onchange = async () => {
-      if (!input.files || !input.files.length) return;
-      const files = Array.from(input.files);
-      await Promise.all(
-        files.map(async (file) => {
-          const data = await uploadImage(ctx, file);
-          if (!data) return;
-          form.setValue('files', [...form.getValues('files'), data.data.file]);
-        }),
-      );
-    };
-    input.click();
-  };
-
-  const deleteFileHandler = (file: string) => {
-    form.setValue(
-      'files',
-      form.getValues('files').filter((item) => item !== file),
-      { shouldValidate: true },
-    );
-  };
-
-  const mediumHandler = (medium: string) => {
-    if (form.getValues('medium').includes(medium)) {
+  const arrFieldHandler = (
+    formField: 'medium' | 'subjects' | 'folders',
+    value: string,
+  ) => {
+    if (form.getValues(formField).includes(value)) {
       form.setValue(
         'medium',
-        form.getValues('medium').filter((item) => item !== medium),
+        form.getValues(formField).filter((item) => item !== value),
         { shouldValidate: true },
       );
     } else {
-      form.setValue('medium', [...form.getValues('medium'), medium], {
-        shouldValidate: true,
-      });
-    }
-  };
-
-  const foldersHandler = (folder: string) => {
-    if (form.getValues('folders').includes(folder)) {
-      form.setValue(
-        'folders',
-        form.getValues('folders').filter((item) => item !== folder),
-        { shouldValidate: true },
-      );
-    } else {
-      form.setValue('folders', [...form.getValues('folders'), folder], {
-        shouldValidate: true,
-      });
-    }
-  };
-
-  const subjectHandler = (subject: string) => {
-    if (form.getValues('subjects').includes(subject)) {
-      form.setValue(
-        'subjects',
-        form.getValues('subjects').filter((item) => item !== subject),
-        { shouldValidate: true },
-      );
-    } else {
-      form.setValue('subjects', [...form.getValues('subjects'), subject], {
+      form.setValue(formField, [...form.getValues(formField), value], {
         shouldValidate: true,
       });
     }
@@ -158,44 +108,43 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                   : 'Save'}
               </Button>
             </div>
-            <FormField
-              control={form.control}
-              name="thumbnail"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Thumbnail</FormLabel>
-                  <div className="relative flex size-52 min-w-52 items-center justify-center border border-border bg-muted sm:order-first">
-                    <button
-                      type="button"
-                      disabled={loading}
-                      className="h-full w-full p-0"
-                      onClick={uploadThumbnailHandler}
-                    >
-                      {!!form.watch('thumbnail') && (
-                        <Image src={getImageUrl(form.watch('thumbnail'))} />
-                      )}
-                    </button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field} />
-                  </FormControl>
-                  {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex items-end gap-4 sm:flex-col sm:items-start sm:gap-0">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem className="w-full sm:order-last">
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="thumbnail"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Thumbnail</FormLabel>
+                    <div className="relative flex size-52 min-w-52 items-center justify-center border border-border bg-muted sm:order-first">
+                      <button
+                        type="button"
+                        disabled={loading}
+                        className="h-full w-full p-0"
+                        onClick={uploadThumbnailHandler}
+                      >
+                        {!!form.watch('thumbnail') && (
+                          <Image src={getImageUrl(form.watch('thumbnail'))} />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="description"
@@ -203,7 +152,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="" {...field} />
+                    <Textarea placeholder="" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,30 +164,10 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
               render={() => (
                 <FormItem>
                   <FormLabel>Artworks</FormLabel>
-                  <Button
-                    type="button"
-                    disabled={loading}
-                    variant="outline"
-                    className="w-full"
-                    onClick={uploadArtworksHandler}
-                  >
-                    Add
-                  </Button>
-                  {!!form.watch('files').length && (
-                    <div className="grid w-full grid-cols-5 gap-1 rounded-md border border-border p-1 xl:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1">
-                      {form.watch('files').map((file) => (
-                        <div className="relative aspect-square" key={file}>
-                          <Image src={getImageUrl(file)} className="bg-muted" />
-                          <button
-                            onClick={() => deleteFileHandler(file)}
-                            className="absolute right-0.5 top-0.5 rounded-full bg-black p-1 text-destructive"
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <UploadImage
+                    images={form.watch('files')}
+                    emit={(v) => form.setValue('files', v)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -263,7 +192,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                             ? 'default'
                             : 'outline'
                         }
-                        onClick={() => mediumHandler(medium.name)}
+                        onClick={() => arrFieldHandler('medium', medium.name)}
                         className="capitalize"
                       >
                         {medium.name}
@@ -286,7 +215,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                         key={subject}
                         type="button"
                         variant={'outline'}
-                        onClick={() => subjectHandler(subject)}
+                        onClick={() => arrFieldHandler('subjects', subject)}
                         className="flex h-7 gap-1 px-2"
                       >
                         {subject}
@@ -312,7 +241,9 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                           onPointerOver={(e) =>
                             subjectHoverHandler(e, subject.name)
                           }
-                          onClick={() => subjectHandler(subject.name)}
+                          onClick={() =>
+                            arrFieldHandler('subjects', subject.name)
+                          }
                           className="h-fit text-wrap capitalize"
                         >
                           {subject.name}
@@ -345,7 +276,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                             ? 'default'
                             : 'outline'
                         }
-                        onClick={() => foldersHandler(folder)}
+                        onClick={() => arrFieldHandler('folders', folder)}
                         className="capitalize"
                       >
                         {folder}

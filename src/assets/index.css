@@ -83,14 +83,14 @@
       Inter,
       -apple-system,
       BlinkMacSystemFont,
-      "Segoe UI",
+      'Segoe UI',
       Roboto,
       Oxygen,
       Ubuntu,
       Cantarell,
-      "Fira Sans",
-      "Droid Sans",
-      "Helvetica Neue",
+      'Fira Sans',
+      'Droid Sans',
+      'Helvetica Neue',
       sans-serif;
     font-size: 0.875rem /* 14px */;
     line-height: 1.25rem /* 20p*/;
@@ -100,7 +100,7 @@
   }
 
   a {
-    @apply text-accent-foreground hover:text-accent-foreground/70 transition-colors flex items-center gap-1
+    @apply flex items-center gap-1 text-accent-foreground transition-colors hover:text-accent-foreground/70;
   }
 
   #root {
