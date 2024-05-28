@@ -5,9 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/Dialog';
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from '@tanstack/react-router';
 import { getImageUrl } from '@/lib/api/artworks';
 
@@ -36,10 +36,22 @@ export const ArtworkLens = (props: {
                   {props.artwork.title}
                 </AvatarFallback>
               </Avatar>
+              <div>
+                <h2 className="text-2xl font-bold capitalize text-foreground">
+                  {props.artwork.user.userProfile.name}
+                </h2>
+                <p className="text-md capitalize text-muted-foreground">
+                  {props.artwork.user.userProfile.headline}
+                </p>
+              </div>
             </Link>
-            <div className="mx-auto flex flex-col">
-              <DialogTitle>{props.artwork.title}</DialogTitle>
-              <DialogDescription>{props.artwork.description}</DialogDescription>
+            <div className="ml-auto flex flex-col items-center justify-center">
+              <DialogTitle className="text-2xl font-bold capitalize text-foreground">
+                {props.artwork.title}
+              </DialogTitle>
+              <DialogDescription className="text-md text-muted-foreground">
+                {props.artwork.description}
+              </DialogDescription>
             </div>
           </DialogHeader>
           <div className="relative z-10 flex flex-col items-center gap-2 overflow-y-auto p-2 pt-0">

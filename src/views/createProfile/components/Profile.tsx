@@ -5,14 +5,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/Form';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/components/ui/form';
+import { Textarea } from '@/components/ui/Textarea';
 import { Input } from '@/components/ui/Input';
 import { UseFormReturn } from 'react-hook-form';
 import { ProfileSchema } from '../validation';
 import { SelectCountry } from '@/components/selectors/selectCountry';
 import { useCallback } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { type MouseEvent } from 'react';
 import { Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
 import { uploadImage } from '@/model';

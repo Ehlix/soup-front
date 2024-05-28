@@ -74,7 +74,10 @@ export const CreateProfileView = reatomComponent(({ ctx }) => {
   return (
     <div className="flex h-full w-full grow items-center justify-center ">
       <div className="flex w-3/5 flex-col gap-1 lg:w-4/5 sm:w-full">
-        <div className="flex justify-center gap-4">
+        <div className="flex items-center text-3xl font-bold">
+          Create Profile
+        </div>
+        <div className="flex justify-end gap-4">
           <Button
             disabled={
               ctx.spy(createProfile.statusesAtom).isPending ||

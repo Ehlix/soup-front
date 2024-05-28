@@ -12,7 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/Form';
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/Input';
 import { Image } from '@/components/cards/Image';
 import { getImageUrl } from '@/lib/api/artworks';
@@ -23,17 +23,13 @@ import {
 } from './model';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { mediumList, subjectList } from '@/lib/static/artworkMeta';
-import { Textarea } from '@/components/ui/textarea';
+import { Textarea } from '@/components/ui/Textarea';
 import { UploadImage } from './components/UploadImage';
 
 export const NewArtworkView = reatomComponent(({ ctx }) => {
   const loading = ctx.spy(uploadImage.statusesAtom).isPending;
   const subjectDescription = ctx.spy(currentSubjectDescription);
-  const folders = ctx.get(sessionDataAtom)?.userProfile?.folders || [
-    'all',
-    'kart',
-    'art',
-  ];
+  const folders = ctx.get(sessionDataAtom)?.userProfile?.folders;
 
   const form = useForm<NewArtworkSchema>({
     resolver: zodResolver(newArtworkSchema),
@@ -62,7 +58,6 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
       const file = input.files[0];
       const data = await uploadImage(ctx, file);
       if (!data) return;
-      console.log(data);
       form.setValue('thumbnail', data.data.file, { shouldValidate: true });
     };
     input.click();
@@ -95,7 +90,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
       <div className="flex w-11/12 flex-col gap-1 lg:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="">
-            <div className="mb-4 flex justify-center gap-4">
+            <div className="mb-4 flex gap-4">
               <Button
                 disabled={
                   loading || ctx.spy(UploadNewArtwork.statusesAtom).isPending
@@ -108,35 +103,66 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                   : 'Save'}
               </Button>
             </div>
+            <div className="text-3xl font-bold">Create new artwork</div>
             <div className="flex items-end gap-4 sm:flex-col sm:items-start sm:gap-0">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem className="w-full sm:order-last">
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="w-full">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="w-full sm:order-last">
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="thumbnail"
                 render={() => (
-                  <FormItem>
+                  <FormItem className="self-start sm:order-first">
                     <FormLabel>Thumbnail</FormLabel>
-                    <div className="relative flex size-52 min-w-52 items-center justify-center border border-border bg-muted sm:order-first">
+                    <div className="group relative flex size-52 min-w-52 items-center justify-center border border-border">
                       <button
                         type="button"
                         disabled={loading}
-                        className="h-full w-full p-0"
+                        className="z-10 h-full w-full p-0"
                         onClick={uploadThumbnailHandler}
                       >
-                        {!!form.watch('thumbnail') && (
-                          <Image src={getImageUrl(form.watch('thumbnail'))} />
+                        {form.watch('thumbnail') ? (
+                          <div className="z-10 h-full w-full p-0 transition-all group-hover:opacity-55 group-hover:blur-sm">
+                            <Image src={getImageUrl(form.watch('thumbnail'))} />
+                          </div>
+                        ) : (
+                          <div className="text-lg">Upload</div>
+                        )}
+                        {loading ? (
+                          <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center text-lg transition-opacity">
+                            Loading ...
+                          </div>
+                        ) : (
+                          !!form.watch('thumbnail') && (
+                            <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center text-lg opacity-0 transition-opacity group-hover:opacity-100">
+                              Upload
+                            </div>
+                          )
                         )}
                       </button>
                     </div>
@@ -145,19 +171,6 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="files"
@@ -260,33 +273,35 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="folders"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Folders</FormLabel>
-                  <div className="grid grid-cols-5 gap-1 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1">
-                    {folders.map((folder) => (
-                      <Button
-                        key={folder}
-                        type="button"
-                        variant={
-                          form.getValues('folders').includes(folder)
-                            ? 'default'
-                            : 'outline'
-                        }
-                        onClick={() => arrFieldHandler('folders', folder)}
-                        className="capitalize"
-                      >
-                        {folder}
-                      </Button>
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {folders && (
+              <FormField
+                control={form.control}
+                name="folders"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Folders</FormLabel>
+                    <div className="grid grid-cols-5 gap-1 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1">
+                      {folders.map((folder) => (
+                        <Button
+                          key={folder}
+                          type="button"
+                          variant={
+                            form.getValues('folders').includes(folder)
+                              ? 'default'
+                              : 'outline'
+                          }
+                          onClick={() => arrFieldHandler('folders', folder)}
+                          className="capitalize"
+                        >
+                          {folder}
+                        </Button>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </form>
         </Form>
       </div>

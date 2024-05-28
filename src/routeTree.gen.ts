@@ -17,11 +17,11 @@ import { Route as CreateProfileImport } from './routes/create-profile'
 import { Route as AuthImport } from './routes/auth'
 import { Route as LoggedImport } from './routes/_logged'
 import { Route as UserImport } from './routes/$user'
-import { Route as LoggedNewArtworkImport } from './routes/_logged/new-artwork'
 
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
+const LoggedNewArtworkLazyImport = createFileRoute('/_logged/new-artwork')()
 const UserFollowingsLazyImport = createFileRoute('/$user/followings')()
 const UserFollowersLazyImport = createFileRoute('/$user/followers')()
 const UserArtworksLazyImport = createFileRoute('/$user/artworks')()
@@ -56,6 +56,13 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
+const LoggedNewArtworkLazyRoute = LoggedNewArtworkLazyImport.update({
+  path: '/new-artwork',
+  getParentRoute: () => LoggedRoute,
+} as any).lazy(() =>
+  import('./routes/_logged/new-artwork.lazy').then((d) => d.Route),
+)
+
 const UserFollowingsLazyRoute = UserFollowingsLazyImport.update({
   path: '/followings',
   getParentRoute: () => UserRoute,
@@ -82,73 +89,157 @@ const UserAboutLazyRoute = UserAboutLazyImport.update({
   getParentRoute: () => UserRoute,
 } as any).lazy(() => import('./routes/$user/about.lazy').then((d) => d.Route))
 
-const LoggedNewArtworkRoute = LoggedNewArtworkImport.update({
-  path: '/new-artwork',
-  getParentRoute: () => LoggedRoute,
-} as any).lazy(() =>
-  import('./routes/_logged/new-artwork.lazy').then((d) => d.Route),
-)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/$user': {
+      id: '/$user'
+      path: '/$user'
+      fullPath: '/$user'
       preLoaderRoute: typeof UserImport
       parentRoute: typeof rootRoute
     }
     '/_logged': {
+      id: '/_logged'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof LoggedImport
       parentRoute: typeof rootRoute
     }
     '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
     '/create-profile': {
+      id: '/create-profile'
+      path: '/create-profile'
+      fullPath: '/create-profile'
       preLoaderRoute: typeof CreateProfileImport
       parentRoute: typeof rootRoute
     }
-    '/_logged/new-artwork': {
-      preLoaderRoute: typeof LoggedNewArtworkImport
-      parentRoute: typeof LoggedImport
-    }
     '/$user/about': {
+      id: '/$user/about'
+      path: '/about'
+      fullPath: '/$user/about'
       preLoaderRoute: typeof UserAboutLazyImport
       parentRoute: typeof UserImport
     }
     '/$user/artworks': {
+      id: '/$user/artworks'
+      path: '/artworks'
+      fullPath: '/$user/artworks'
       preLoaderRoute: typeof UserArtworksLazyImport
       parentRoute: typeof UserImport
     }
     '/$user/followers': {
+      id: '/$user/followers'
+      path: '/followers'
+      fullPath: '/$user/followers'
       preLoaderRoute: typeof UserFollowersLazyImport
       parentRoute: typeof UserImport
     }
     '/$user/followings': {
+      id: '/$user/followings'
+      path: '/followings'
+      fullPath: '/$user/followings'
       preLoaderRoute: typeof UserFollowingsLazyImport
       parentRoute: typeof UserImport
+    }
+    '/_logged/new-artwork': {
+      id: '/_logged/new-artwork'
+      path: '/new-artwork'
+      fullPath: '/new-artwork'
+      preLoaderRoute: typeof LoggedNewArtworkLazyImport
+      parentRoute: typeof LoggedImport
     }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
-  UserRoute.addChildren([
+  UserRoute: UserRoute.addChildren({
     UserAboutLazyRoute,
     UserArtworksLazyRoute,
     UserFollowersLazyRoute,
     UserFollowingsLazyRoute,
-  ]),
-  LoggedRoute.addChildren([LoggedNewArtworkRoute]),
+  }),
+  LoggedRoute: LoggedRoute.addChildren({ LoggedNewArtworkLazyRoute }),
   AuthRoute,
   CreateProfileRoute,
-])
+})
 
 /* prettier-ignore-end */
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/",
+        "/$user",
+        "/_logged",
+        "/auth",
+        "/create-profile"
+      ]
+    },
+    "/": {
+      "filePath": "index.lazy.tsx"
+    },
+    "/$user": {
+      "filePath": "$user.tsx",
+      "children": [
+        "/$user/about",
+        "/$user/artworks",
+        "/$user/followers",
+        "/$user/followings"
+      ]
+    },
+    "/_logged": {
+      "filePath": "_logged.tsx",
+      "children": [
+        "/_logged/new-artwork"
+      ]
+    },
+    "/auth": {
+      "filePath": "auth.tsx"
+    },
+    "/create-profile": {
+      "filePath": "create-profile.tsx"
+    },
+    "/$user/about": {
+      "filePath": "$user/about.lazy.tsx",
+      "parent": "/$user"
+    },
+    "/$user/artworks": {
+      "filePath": "$user/artworks.lazy.tsx",
+      "parent": "/$user"
+    },
+    "/$user/followers": {
+      "filePath": "$user/followers.lazy.tsx",
+      "parent": "/$user"
+    },
+    "/$user/followings": {
+      "filePath": "$user/followings.lazy.tsx",
+      "parent": "/$user"
+    },
+    "/_logged/new-artwork": {
+      "filePath": "_logged/new-artwork.lazy.tsx",
+      "parent": "/_logged"
+    }
+  }
+}
+ROUTE_MANIFEST_END */
