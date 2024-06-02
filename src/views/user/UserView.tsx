@@ -1,4 +1,4 @@
-import { setUserId, userDataAtom } from '@/views/user/model';
+import { getUserById, userDataAtom } from '@/views/user/model';
 import { reatomComponent } from '@reatom/npm-react';
 import { Outlet, useParams } from '@tanstack/react-router';
 import { useMemo } from 'react';
@@ -9,13 +9,13 @@ export const UserView = reatomComponent(({ ctx }) => {
   const { user } = useParams({ from: '/$user' });
 
   useMemo(() => {
-    setUserId(ctx, user);
+    getUserById(ctx, user);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const userData = ctx.spy(userDataAtom);
   if (!userData) return null;
-  const isLoading = ctx.spy(userData.userProfile.pendingAtom);
+  const isLoading = ctx.spy(userData.userProfile.statusesAtom).isPending;
   if (isLoading) {
     return (
       <div>
@@ -30,17 +30,14 @@ export const UserView = reatomComponent(({ ctx }) => {
       </div>
     );
   }
-  const profile = ctx.spy(userData.userProfile.dataAtom).data;
   return (
     <div className="">
-      {profile && (
-        <div className="flex w-full flex-col gap-2 pb-2">
-          <UserInfo userProfile={profile} />
-          <div className="flex h-8 items-center">
-            <UserNavigation />
-          </div>
+      <div className="flex w-full flex-col gap-2 pb-2">
+        <UserInfo />
+        <div className="flex h-8 items-center">
+          <UserNavigation />
         </div>
-      )}
+      </div>
       <Outlet />
     </div>
   );

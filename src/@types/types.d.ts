@@ -122,3 +122,33 @@ type UploadImageResponse = {
 type UploadImageParams = {
   file: File;
 };
+
+type UserFollow = {
+  id: string;
+  userId: string;
+  followId: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+type FollowResponse = UserFollow & {
+  user: {
+    id: string;
+    userProfile: UserProfile;
+  };
+};
+
+type ArtworkLike = {
+  id: string;
+  artworkId: string;
+  userId: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+type UserArtworkLikeResponse = ArtworkLike & {
+  user: {
+    id: string;
+    userProfile: UserProfile;
+  };
+};
