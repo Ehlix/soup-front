@@ -91,3 +91,12 @@ export const userFollowers = (
     controller,
   );
 };
+
+export const checkFollow = async (
+  userId: string,
+  followId: string,
+  controller?: AbortController,
+) => {
+  const follows = await userFollows(userId, controller);
+  return follows.data.some((f) => f.followId === followId);
+};

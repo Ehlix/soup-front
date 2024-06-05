@@ -1,13 +1,14 @@
 import { Link } from '@tanstack/react-router';
 
+const pages = [
+  { title: 'Artworks', key: 'artworks' },
+  { title: 'About', key: 'about' },
+  { title: 'Likes', key: 'likes' },
+  { title: 'Followers', key: 'followers' },
+  { title: 'Followings', key: 'followings' },
+];
+
 export const UserNavigation = () => {
-  const pages = [
-    { title: 'Artworks', key: 'artworks' },
-    { title: 'About', key: 'about' },
-    { title: 'Likes', key: 'likes' },
-    { title: 'Followers', key: 'followers' },
-    { title: 'Followings', key: 'followings' },
-  ];
   return (
     <div className="flex h-full w-full justify-between gap-1">
       {pages.map((item) => (

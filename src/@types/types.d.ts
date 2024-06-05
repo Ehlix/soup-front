@@ -27,7 +27,7 @@ type UserProfile = {
   description?: string;
   folders?: string[];
   social?: {
-    email?: string;
+    publicEmail?: string;
     twitter?: string;
     instagram?: string;
     facebook?: string;
