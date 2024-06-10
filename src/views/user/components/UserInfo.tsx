@@ -5,14 +5,15 @@ import { reatomComponent } from '@reatom/npm-react';
 import * as model from '../model';
 import { sessionDataAtom } from '@/model';
 import { CheckIcon } from '@radix-ui/react-icons';
+import { Link } from '@tanstack/react-router';
 
 export const UserInfo = reatomComponent(({ ctx }) => {
   const userData = ctx.spy(model.userDataAtom);
   if (!userData) return null;
-  const userProfile = ctx.spy(userData.userProfile.dataAtom).data;
+  const userProfile = ctx.spy(userData.userProfile.dataAtom)?.data;
   if (!userProfile) return null;
-  const userFollowers = ctx.spy(userData.userFollowers.dataAtom).data;
-  const userFollows = ctx.spy(userData.userFollows.dataAtom).data;
+  const userFollowers = ctx.spy(userData.userFollowers.dataAtom)?.data;
+  const userFollows = ctx.spy(userData.userFollows.dataAtom)?.data;
   if (!userFollowers || !userFollows) return null;
   const isFollowed = ctx.spy(model.checkFollow.dataAtom);
   const sessionUserProfile = ctx.spy(sessionDataAtom)?.userProfile;
@@ -20,7 +21,7 @@ export const UserInfo = reatomComponent(({ ctx }) => {
   const followLoading = ctx.spy(model.checkFollow.statusesAtom).isPending;
   return (
     <div className="flex justify-between gap-2">
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center gap-2">
         <Avatar className="size-[4.5rem]">
           <AvatarImage
             src={getImageUrl(userProfile.avatar, userProfile.userId)}
@@ -37,30 +38,32 @@ export const UserInfo = reatomComponent(({ ctx }) => {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-2 text-center">
-        <div className="flex items-center gap-4">
-          {sessionUserProfile ? (
-            isCurrentUserPage ? null : isFollowed ? (
-              <Button
-                disabled={followLoading}
-                variant="ghost"
-                className="w-full"
-                onClick={() => model.unFollow(ctx, userProfile.userId)}
-              >
-                <CheckIcon className="size-5" /> You follow
-              </Button>
-            ) : (
-              <Button
-                disabled={followLoading}
-                className="w-full"
-                onClick={() => model.follow(ctx, userProfile.userId)}
-              >
-                Follow
-              </Button>
-            )
+      <div className="flex w-full flex-wrap items-center justify-end gap-2 text-center">
+        {sessionUserProfile ? (
+          isCurrentUserPage ? null : isFollowed ? (
+            <Button
+              disabled={followLoading}
+              variant="ghost"
+              className=""
+              onClick={() => model.unFollow(ctx, userProfile.userId)}
+            >
+              <CheckIcon className="size-5" /> You follow
+            </Button>
           ) : (
-            <div>fake button</div>
-          )}
+            <Button
+              disabled={followLoading}
+              className=""
+              onClick={() => model.follow(ctx, userProfile.userId)}
+            >
+              Follow
+            </Button>
+          )
+        ) : (
+          <Link to="/auth">
+            <Button>Follow</Button>
+          </Link>
+        )}
+        <div className="ml-2 flex items-center gap-2">
           <div className="w-full">
             <h1 className="text-2xl font-bold">{userFollowers.length}</h1>
             <p className="text-md capitalize text-muted-foreground">

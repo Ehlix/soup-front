@@ -35,7 +35,7 @@ export const refreshSession = reatomAsync((ctx) => {
   return isLogged ? refreshToken(ctx.controller) : Promise.resolve(null);
 }, 'refreshSession');
 refreshSession.onFulfill.onCall((ctx, res) => {
-  res && setSession(ctx, res.data);
+  setSession(ctx, res?.data || null);
 });
 refreshSession.onReject.onCall((ctx) => {
   setSession(ctx, null);
@@ -81,26 +81,17 @@ export const followFactory = () => {
     withStatusesAtom(),
     withRetry(),
   );
+  follow.onSettle.onCall((ctx) => {
+    checkFollow.retry(ctx);
+  });
+  unFollow.onSettle.onCall((ctx) => {
+    checkFollow.retry(ctx);
+  });
   return { follow, unFollow, checkFollow };
 };
 
 export const userFactory = () => {
   const userIdAtom = atom('', 'userFactory.userIdAtom');
-
-  const profileInitState = {
-    data: null as UserProfile | null,
-    error: null,
-  };
-
-  const artworkInitState = {
-    data: null as ArtworkResponse[] | null,
-    error: null,
-  };
-
-  const followInitState = {
-    data: null as FollowResponse[] | null,
-    error: null,
-  };
 
   const userDataAtom = atom((ctx) => {
     const userId = ctx.spy(userIdAtom);
@@ -109,6 +100,7 @@ export const userFactory = () => {
 
     const userProfile = reatomResource(async (ctx) => {
       const userId = ctx.spy(userIdAtom);
+      if (!userId) return null;
       const profile = await ctx.schedule(() =>
         users.getUserProfile(userId, ctx.controller),
       );
@@ -117,26 +109,24 @@ export const userFactory = () => {
         profile.data.social = JSON.parse(social.toString());
       }
       return profile;
-    }, 'userProfile').pipe(
-      withDataAtom(profileInitState),
-      withErrorAtom(),
-      withStatusesAtom(),
-    );
+    }, 'userProfile').pipe(withDataAtom(), withErrorAtom(), withStatusesAtom());
 
     const userArtworks = reatomResource(async (ctx) => {
       const userId = ctx.spy(userIdAtom);
+      if (!userId) return null;
       return await ctx.schedule(() =>
         artworks.getUserArtworks({ userId }, ctx.controller),
       );
-    }, 'userArtworks').pipe(withDataAtom(artworkInitState), withErrorAtom());
+    }, 'userArtworks').pipe(withDataAtom(), withErrorAtom());
 
     const userFollowers = reatomResource(async (ctx) => {
       const userId = ctx.spy(userIdAtom);
+      if (!userId) return null;
       return await ctx.schedule(() =>
         users.userFollowers(userId, ctx.controller),
       );
     }, 'userFollowers').pipe(
-      withDataAtom(followInitState),
+      withDataAtom(),
       withErrorAtom(),
       withRetry(),
       withStatusesAtom(),
@@ -144,11 +134,12 @@ export const userFactory = () => {
 
     const userFollows = reatomResource(async (ctx) => {
       const userId = ctx.spy(userIdAtom);
+      if (!userId) return null;
       return await ctx.schedule(() =>
         users.userFollows(userId, ctx.controller),
       );
     }, 'userFollows').pipe(
-      withDataAtom(followInitState),
+      withDataAtom(),
       withErrorAtom(),
       withRetry(),
       withStatusesAtom(),
@@ -173,16 +164,16 @@ export const userFactory = () => {
     ctx.get(userDataAtom)?.userFollowers.retry(ctx);
     ctx.get(userDataAtom)?.userFollows.retry(ctx);
   });
-  follow.onSettle.onCall((ctx) => {
-    checkFollow(ctx, ctx.get(userIdAtom));
-  });
+  // follow.onSettle.onCall((ctx) => {
+  //   checkFollow(ctx, ctx.get(userIdAtom));
+  // });
   unFollow.onFulfill.onCall((ctx) => {
     ctx.get(userDataAtom)?.userFollowers.retry(ctx);
     ctx.get(userDataAtom)?.userFollows.retry(ctx);
   });
-  unFollow.onSettle.onCall((ctx) => {
-    checkFollow(ctx, ctx.get(userIdAtom));
-  });
+  // unFollow.onSettle.onCall((ctx) => {
+  //   checkFollow(ctx, ctx.get(userIdAtom));
+  // });
 
   return { userDataAtom, getUserById, follow, unFollow, checkFollow };
 };

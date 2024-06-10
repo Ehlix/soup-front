@@ -9,7 +9,7 @@ export const UserFollowingsView = reatomComponent(({ ctx }) => {
   const loading = ctx.spy(userData.userFollows.statusesAtom).isPending;
   if (loading) return <Loading />;
   if (ctx.spy(userData.userFollows.errorAtom)) return <div>Empty</div>;
-  const userFollows = ctx.spy(userData.userFollows.dataAtom).data;
+  const userFollows = ctx.spy(userData.userFollows.dataAtom)?.data;
   if (!userFollows) return null;
   if (userFollows.length === 0) return <div>Empty</div>;
   return (

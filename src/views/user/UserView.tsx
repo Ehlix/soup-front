@@ -12,6 +12,9 @@ export const UserView = reatomComponent(({ ctx }) => {
 
   useEffect(() => {
     getUserById(ctx, user);
+    return () => {
+      getUserById(ctx, '');
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

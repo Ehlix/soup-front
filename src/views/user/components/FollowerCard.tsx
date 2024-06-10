@@ -1,27 +1,28 @@
 import { Button } from '@/components/ui/Button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getImageUrl } from '@/lib/api/artworks';
-import { followFactory, isLoggedAtom, sessionDataAtom } from '@/model';
+import { followFactory, sessionDataAtom } from '@/model';
 import { reatomComponent } from '@reatom/npm-react';
 import { useMemo } from 'react';
 import * as model from '../model';
 import { CheckIcon } from '@radix-ui/react-icons';
+import { Link } from '@tanstack/react-router';
 
 type Props = {
   data: FollowResponse;
 };
 
 export const FollowerCard = reatomComponent<Props>(({ ctx, data }) => {
-  const isLogged = ctx.spy(isLoggedAtom);
+  const sessionUserProfile = ctx.spy(sessionDataAtom)?.userProfile;
   const session = useMemo(() => {
-    if (!isLogged) {
+    if (!sessionUserProfile) {
       return null;
     }
     const { checkFollow } = followFactory();
     checkFollow(ctx, data.followId);
     return checkFollow;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLogged]);
+  }, [sessionUserProfile]);
   const isFollow = session && ctx.spy(session.dataAtom);
   const followLoading = session
     ? ctx.spy(session.statusesAtom).isPending
@@ -68,7 +69,11 @@ export const FollowerCard = reatomComponent<Props>(({ ctx, data }) => {
                 Follow
               </Button>
             )
-          ) : null}
+          ) : (
+            <Link to="/auth">
+              <Button>Follow</Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

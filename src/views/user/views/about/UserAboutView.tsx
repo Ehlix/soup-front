@@ -4,7 +4,7 @@ import * as model from '../../model';
 export const UserAboutView = reatomComponent(({ ctx }) => {
   const userData = ctx.spy(model.userDataAtom);
   if (!userData) return null;
-  const userProfile = ctx.spy(userData.userProfile.dataAtom).data;
+  const userProfile = ctx.spy(userData.userProfile.dataAtom)?.data;
   return (
     <div className="flex w-full flex-col items-start gap-4 p-2">
       <div>
