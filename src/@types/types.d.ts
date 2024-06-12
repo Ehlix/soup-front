@@ -147,8 +147,5 @@ type ArtworkLike = {
 };
 
 type UserArtworkLikeResponse = ArtworkLike & {
-  user: {
-    id: string;
-    userProfile: UserProfile;
-  };
+  artwork: Artwork;
 };

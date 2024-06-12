@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 export const ArtworkCard = (props: {
   className?: string;
-  artwork: ArtworkResponse;
+  artwork: Artwork & Partial<ArtworkResponse>;
 }) => {
   const [image] = useLoadImage(
     getImageUrl(props.artwork.thumbnail, props.artwork.userId),

@@ -22,6 +22,7 @@ import { Route as UserImport } from './routes/$user'
 
 const IndexLazyImport = createFileRoute('/')()
 const LoggedNewArtworkLazyImport = createFileRoute('/_logged/new-artwork')()
+const UserLikesLazyImport = createFileRoute('/$user/likes')()
 const UserFollowingsLazyImport = createFileRoute('/$user/followings')()
 const UserFollowersLazyImport = createFileRoute('/$user/followers')()
 const UserArtworksLazyImport = createFileRoute('/$user/artworks')()
@@ -62,6 +63,11 @@ const LoggedNewArtworkLazyRoute = LoggedNewArtworkLazyImport.update({
 } as any).lazy(() =>
   import('./routes/_logged/new-artwork.lazy').then((d) => d.Route),
 )
+
+const UserLikesLazyRoute = UserLikesLazyImport.update({
+  path: '/likes',
+  getParentRoute: () => UserRoute,
+} as any).lazy(() => import('./routes/$user/likes.lazy').then((d) => d.Route))
 
 const UserFollowingsLazyRoute = UserFollowingsLazyImport.update({
   path: '/followings',
@@ -156,6 +162,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserFollowingsLazyImport
       parentRoute: typeof UserImport
     }
+    '/$user/likes': {
+      id: '/$user/likes'
+      path: '/likes'
+      fullPath: '/$user/likes'
+      preLoaderRoute: typeof UserLikesLazyImport
+      parentRoute: typeof UserImport
+    }
     '/_logged/new-artwork': {
       id: '/_logged/new-artwork'
       path: '/new-artwork'
@@ -175,6 +188,7 @@ export const routeTree = rootRoute.addChildren({
     UserArtworksLazyRoute,
     UserFollowersLazyRoute,
     UserFollowingsLazyRoute,
+    UserLikesLazyRoute,
   }),
   LoggedRoute: LoggedRoute.addChildren({ LoggedNewArtworkLazyRoute }),
   AuthRoute,
@@ -205,7 +219,8 @@ export const routeTree = rootRoute.addChildren({
         "/$user/about",
         "/$user/artworks",
         "/$user/followers",
-        "/$user/followings"
+        "/$user/followings",
+        "/$user/likes"
       ]
     },
     "/_logged": {
@@ -234,6 +249,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/$user/followings": {
       "filePath": "$user/followings.lazy.tsx",
+      "parent": "/$user"
+    },
+    "/$user/likes": {
+      "filePath": "$user/likes.lazy.tsx",
       "parent": "/$user"
     },
     "/_logged/new-artwork": {

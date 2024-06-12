@@ -22,5 +22,8 @@ export const register = reatomAsync((ctx, data: SignInParams) => {
 }, 'register').pipe(withStatusesAtom());
 register.onFulfill.onCall((ctx, res) => {
   res && setSession(ctx, res.data);
+  router.navigate({
+    to: '/',
+  });
 });
 register.onReject.onCall((_, error) => console.log(error));

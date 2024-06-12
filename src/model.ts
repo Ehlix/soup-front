@@ -2,6 +2,7 @@ import { withLocalStorage } from '@reatom/persist-web-storage';
 import * as artworks from '@/lib/api/artworks';
 import { refreshToken, signOut } from '@/lib/api/auth';
 import {
+  Ctx,
   action,
   atom,
   reatomAsync,
@@ -119,6 +120,14 @@ export const userFactory = () => {
       );
     }, 'userArtworks').pipe(withDataAtom(), withErrorAtom());
 
+    const userLikesArtworks = reatomResource(async (ctx) => {
+      const userId = ctx.spy(userIdAtom);
+      if (!userId) return null;
+      return await ctx.schedule(() =>
+        artworks.userArtworksLikes(userId, ctx.controller),
+      );
+    }, 'userLikes').pipe(withDataAtom(), withErrorAtom(), withRetry());
+
     const userFollowers = reatomResource(async (ctx) => {
       const userId = ctx.spy(userIdAtom);
       if (!userId) return null;
@@ -148,6 +157,7 @@ export const userFactory = () => {
     return {
       userProfile,
       userArtworks,
+      userLikesArtworks,
       userFollowers,
       userFollows,
     };
@@ -176,4 +186,87 @@ export const userFactory = () => {
   // });
 
   return { userDataAtom, getUserById, follow, unFollow, checkFollow };
+};
+
+export const artworkLikeFactory = (ctx: Ctx, artworkId: string) => {
+  const likesCount = atom(0, 'artworkLikeFactory.likesCount');
+  const isLiked = atom(false, 'artworkLikeFactory.isLiked');
+
+  const like = reatomAsync((ctx) => {
+    likesCount(ctx, ctx.get(likesCount) + 1);
+    isLiked(ctx, true);
+    return artworks.artworkLike(artworkId, ctx.controller);
+  }, 'artworkLike').pipe(
+    withDataAtom(null),
+    withErrorAtom(),
+    withAbort(),
+    withStatusesAtom(),
+  );
+  like.onFulfill.onCall((ctx, res) => {
+    res.data && isLiked(ctx, res.data);
+    getCount.retry(ctx);
+  });
+  like.onReject.onCall((ctx) => {
+    checkLike.retry(ctx);
+  });
+  // like.onSettle.onCall((ctx) => {
+  //   getCount.retry(ctx);
+  //   checkLike.retry(ctx);
+  // });
+
+  const dislike = reatomAsync((ctx) => {
+    likesCount(ctx, ctx.get(likesCount) - 1);
+    isLiked(ctx, false);
+    return artworks.artworkDislike(artworkId, ctx.controller);
+  }, 'artworkDislike').pipe(
+    withDataAtom(null),
+    withErrorAtom(),
+    withAbort(),
+    withStatusesAtom(),
+  );
+  like.onFulfill.onCall((ctx, res) => {
+    res.data && isLiked(ctx, res.data);
+    getCount.retry(ctx);
+  });
+  like.onReject.onCall((ctx) => {
+    checkLike.retry(ctx);
+  });
+  // dislike.onSettle.onCall((ctx) => {
+  //   getCount.retry(ctx);
+  //   checkLike.retry(ctx);
+  // });
+
+  const getCount = reatomAsync((ctx) => {
+    return artworks.artworkLikesCount(artworkId, ctx.controller);
+  }, 'artworkLikesCount').pipe(
+    withDataAtom(0),
+    withErrorAtom(),
+    withAbort(),
+    withStatusesAtom(),
+    withRetry(),
+  );
+  getCount.onFulfill.onCall((ctx, res) => {
+    likesCount(ctx, res.data);
+  });
+
+  const checkLike = reatomAsync(async (ctx) => {
+    const userId = ctx.get(sessionDataAtom)?.userProfile?.userId;
+    if (!userId) return Promise.resolve(false);
+    return artworks
+      .checkArtworkLike(artworkId, userId, ctx.controller)
+      .then((res) => res.data);
+  }, 'checkLike').pipe(
+    withErrorAtom(),
+    withAbort(),
+    withStatusesAtom(),
+    withRetry(),
+  );
+  checkLike.onFulfill.onCall((ctx, res) => {
+    isLiked(ctx, res);
+  });
+
+  checkLike(ctx);
+  getCount(ctx);
+
+  return { likesCount, isLiked, like, dislike, checkLike, getCount };
 };

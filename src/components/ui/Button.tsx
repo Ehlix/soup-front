@@ -21,6 +21,7 @@ const buttonVariants = cva(
           'disabled:opacity-100 disabled:bg-primary text-primary-foreground shadow',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
+        like: 'text-accent hover:text-accent-foreground rounded-full',
       },
       size: {
         default: 'h-9 px-4 py-2',
