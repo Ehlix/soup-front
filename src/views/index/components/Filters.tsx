@@ -4,6 +4,7 @@ import { subjectList } from '@/lib/static/artworkMeta';
 import { Button } from '@/components/ui/Button';
 import { useRef } from 'react';
 import { TriangleLeftIcon } from '@radix-ui/react-icons';
+import { cn } from '@/lib/utils';
 
 export const Filters = reatomComponent(({ ctx }) => {
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,15 @@ export const Filters = reatomComponent(({ ctx }) => {
   const currentFilter = ctx.spy(model.subjectParams);
   return (
     <div className="flex gap-1">
-      <Button onClick={() => model.setParams(ctx, 'subject', '')}>All</Button>
+      <Button
+        onClick={() => model.setParams(ctx, 'subject', '')}
+        className={cn(
+          !currentFilter &&
+            'bg-accent text-accent-foreground hover:bg-accent/90',
+        )}
+      >
+        All
+      </Button>
       {!!currentFilter && (
         <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
           {currentFilter}

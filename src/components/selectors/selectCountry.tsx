@@ -9,12 +9,13 @@ import { countryList } from '@/lib/static/countryList';
 import { memo } from 'react';
 
 type Props = {
+  defaultValue?: string;
   emit?: (value: string) => void;
 };
 
 export const SelectCountry = memo(function SelectCountry(props: Props) {
   return (
-    <Select onValueChange={props.emit}>
+    <Select onValueChange={props.emit} defaultValue={props.defaultValue}>
       <SelectTrigger className="">
         <SelectValue placeholder="Select country" />
       </SelectTrigger>

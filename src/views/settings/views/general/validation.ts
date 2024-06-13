@@ -11,9 +11,15 @@ At least one special character from @$!%*?&
 The overall length of the password should be between 6 and 40 characters.
 */
 
-export const signUpSchema = z
+export const generalSchema = z
   .object({
-    email: z.string().email('Enter valid email').min(5).max(50),
+    email: z
+      .string()
+      .email('Enter valid email')
+      .min(5)
+      .max(50)
+      .optional()
+      .or(z.literal('')),
     password: z
       .string()
       .min(6)
@@ -21,7 +27,9 @@ export const signUpSchema = z
       .regex(
         passwordRegex,
         'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character from @$!%*?&#, and should be between 6 and 40 characters',
-      ),
+      )
+      .optional()
+      .or(z.literal('')),
     confirmPassword: z.string(),
   })
   .required()
@@ -30,13 +38,4 @@ export const signUpSchema = z
     path: ['confirmPassword'],
   });
 
-export type SignUpSchema = z.infer<typeof signUpSchema>;
-
-export const signInSchema = z
-  .object({
-    email: z.string().email('Enter valid email').min(5).max(50),
-    password: z.string().min(6).max(40),
-  })
-  .required();
-
-export type SignInSchema = z.infer<typeof signInSchema>;
+export type GeneralSchema = z.infer<typeof generalSchema>;

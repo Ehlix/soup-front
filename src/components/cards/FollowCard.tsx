@@ -11,6 +11,10 @@ type Props = {
 
 export const FollowCard = reatomComponent<Props>(({ ctx, followId }) => {
   const sessionDataProfile = ctx.spy(sessionDataAtom)?.userProfile;
+  const isMe = sessionDataProfile?.userId === followId;
+  if (isMe) {
+    return null;
+  }
   const followModel = useMemo(() => {
     if (!sessionDataProfile) {
       return null;

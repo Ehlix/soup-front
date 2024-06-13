@@ -17,6 +17,7 @@ import { Route as CreateProfileImport } from './routes/create-profile'
 import { Route as AuthImport } from './routes/auth'
 import { Route as LoggedImport } from './routes/_logged'
 import { Route as UserImport } from './routes/$user'
+import { Route as LoggedSettingsImport } from './routes/_logged/settings'
 
 // Create Virtual Routes
 
@@ -27,6 +28,12 @@ const UserFollowingsLazyImport = createFileRoute('/$user/followings')()
 const UserFollowersLazyImport = createFileRoute('/$user/followers')()
 const UserArtworksLazyImport = createFileRoute('/$user/artworks')()
 const UserAboutLazyImport = createFileRoute('/$user/about')()
+const LoggedSettingsProfileLazyImport = createFileRoute(
+  '/_logged/settings/profile',
+)()
+const LoggedSettingsGeneralLazyImport = createFileRoute(
+  '/_logged/settings/general',
+)()
 
 // Create/Update Routes
 
@@ -95,6 +102,27 @@ const UserAboutLazyRoute = UserAboutLazyImport.update({
   getParentRoute: () => UserRoute,
 } as any).lazy(() => import('./routes/$user/about.lazy').then((d) => d.Route))
 
+const LoggedSettingsRoute = LoggedSettingsImport.update({
+  path: '/settings',
+  getParentRoute: () => LoggedRoute,
+} as any).lazy(() =>
+  import('./routes/_logged/settings.lazy').then((d) => d.Route),
+)
+
+const LoggedSettingsProfileLazyRoute = LoggedSettingsProfileLazyImport.update({
+  path: '/profile',
+  getParentRoute: () => LoggedSettingsRoute,
+} as any).lazy(() =>
+  import('./routes/_logged/settings/profile.lazy').then((d) => d.Route),
+)
+
+const LoggedSettingsGeneralLazyRoute = LoggedSettingsGeneralLazyImport.update({
+  path: '/general',
+  getParentRoute: () => LoggedSettingsRoute,
+} as any).lazy(() =>
+  import('./routes/_logged/settings/general.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -133,6 +161,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/create-profile'
       preLoaderRoute: typeof CreateProfileImport
       parentRoute: typeof rootRoute
+    }
+    '/_logged/settings': {
+      id: '/_logged/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof LoggedSettingsImport
+      parentRoute: typeof LoggedImport
     }
     '/$user/about': {
       id: '/$user/about'
@@ -176,6 +211,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedNewArtworkLazyImport
       parentRoute: typeof LoggedImport
     }
+    '/_logged/settings/general': {
+      id: '/_logged/settings/general'
+      path: '/general'
+      fullPath: '/settings/general'
+      preLoaderRoute: typeof LoggedSettingsGeneralLazyImport
+      parentRoute: typeof LoggedSettingsImport
+    }
+    '/_logged/settings/profile': {
+      id: '/_logged/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof LoggedSettingsProfileLazyImport
+      parentRoute: typeof LoggedSettingsImport
+    }
   }
 }
 
@@ -190,7 +239,13 @@ export const routeTree = rootRoute.addChildren({
     UserFollowingsLazyRoute,
     UserLikesLazyRoute,
   }),
-  LoggedRoute: LoggedRoute.addChildren({ LoggedNewArtworkLazyRoute }),
+  LoggedRoute: LoggedRoute.addChildren({
+    LoggedSettingsRoute: LoggedSettingsRoute.addChildren({
+      LoggedSettingsGeneralLazyRoute,
+      LoggedSettingsProfileLazyRoute,
+    }),
+    LoggedNewArtworkLazyRoute,
+  }),
   AuthRoute,
   CreateProfileRoute,
 })
@@ -226,6 +281,7 @@ export const routeTree = rootRoute.addChildren({
     "/_logged": {
       "filePath": "_logged.tsx",
       "children": [
+        "/_logged/settings",
         "/_logged/new-artwork"
       ]
     },
@@ -234,6 +290,14 @@ export const routeTree = rootRoute.addChildren({
     },
     "/create-profile": {
       "filePath": "create-profile.tsx"
+    },
+    "/_logged/settings": {
+      "filePath": "_logged/settings.tsx",
+      "parent": "/_logged",
+      "children": [
+        "/_logged/settings/general",
+        "/_logged/settings/profile"
+      ]
     },
     "/$user/about": {
       "filePath": "$user/about.lazy.tsx",
@@ -258,6 +322,14 @@ export const routeTree = rootRoute.addChildren({
     "/_logged/new-artwork": {
       "filePath": "_logged/new-artwork.lazy.tsx",
       "parent": "/_logged"
+    },
+    "/_logged/settings/general": {
+      "filePath": "_logged/settings/general.lazy.tsx",
+      "parent": "/_logged/settings"
+    },
+    "/_logged/settings/profile": {
+      "filePath": "_logged/settings/profile.lazy.tsx",
+      "parent": "/_logged/settings"
     }
   }
 }

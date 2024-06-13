@@ -13,6 +13,20 @@ export const getUserProfile = (
   );
 };
 
+export const updateLoginData = (
+  data: Partial<SignInParams>,
+  controller?: AbortController,
+) => {
+  return api.request(
+    {
+      url: '/users',
+      data,
+      method: 'patch',
+    },
+    controller,
+  );
+};
+
 export const createUserProfile = (
   data: CreateUserProfileParams,
   controller?: AbortController,
@@ -27,20 +41,19 @@ export const createUserProfile = (
   );
 };
 
-// export const updateUserProfile = (
-//   data: CreateUserProfileParams,
-//   artworkId: string,
-//   controller?: AbortController,
-// ): Promise<AxiosResponse<UserProfileResponse>> => {
-//   return api.request(
-//     {
-//       url: `/user-profile/update?id=${artworkId}`,
-//       data,
-//       method: 'put',
-//     },
-//     controller,
-//   );
-// };
+export const updateUserProfile = (
+  data: Partial<CreateUserProfileParams>,
+  controller?: AbortController,
+): Promise<AxiosResponse<UserProfileResponse>> => {
+  return api.request(
+    {
+      url: `/user-profile/update`,
+      data,
+      method: 'patch',
+    },
+    controller,
+  );
+};
 
 export const followUser = (
   followId: string,

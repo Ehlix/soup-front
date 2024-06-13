@@ -203,11 +203,12 @@ export const artworkLikeFactory = (ctx: Ctx, artworkId: string) => {
     withStatusesAtom(),
   );
   like.onFulfill.onCall((ctx, res) => {
-    res.data && isLiked(ctx, res.data);
+    isLiked(ctx, res.data);
     getCount.retry(ctx);
   });
   like.onReject.onCall((ctx) => {
     checkLike.retry(ctx);
+    getCount.retry(ctx);
   });
   // like.onSettle.onCall((ctx) => {
   //   getCount.retry(ctx);
@@ -224,12 +225,13 @@ export const artworkLikeFactory = (ctx: Ctx, artworkId: string) => {
     withAbort(),
     withStatusesAtom(),
   );
-  like.onFulfill.onCall((ctx, res) => {
-    res.data && isLiked(ctx, res.data);
+  dislike.onFulfill.onCall((ctx, res) => {
+    isLiked(ctx, !res.data);
     getCount.retry(ctx);
   });
-  like.onReject.onCall((ctx) => {
+  dislike.onReject.onCall((ctx) => {
     checkLike.retry(ctx);
+    getCount.retry(ctx);
   });
   // dislike.onSettle.onCall((ctx) => {
   //   getCount.retry(ctx);

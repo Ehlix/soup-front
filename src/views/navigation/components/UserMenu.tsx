@@ -11,24 +11,31 @@ import {
 import { reatomComponent } from '@reatom/npm-react';
 import { Link } from '@tanstack/react-router';
 import * as model from '@/model';
-
-const userMenuItems = [
-  {
-    title: 'Create new artwork',
-    key: '/new-artwork',
-  },
-  {
-    title: 'My artworks',
-    key: '/my-artworks',
-  },
-  {
-    title: 'Favorites',
-    key: '/favorites',
-  },
-];
+import { useMemo } from 'react';
 
 export const UserMenu = reatomComponent(({ ctx }) => {
   const userProfile = ctx.spy(model.sessionDataAtom)?.userProfile;
+
+  const userMenuItems = useMemo(() => {
+    return [
+      {
+        title: 'Create new artwork',
+        key: '/new-artwork',
+      },
+      {
+        title: 'My artworks',
+        key: '/my-artworks',
+      },
+      {
+        title: 'Favorites',
+        key: `/${userProfile?.site}/likes`,
+      },
+      {
+        title: 'Settings',
+        key: '/settings/general',
+      },
+    ];
+  }, [userProfile?.site]);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full">

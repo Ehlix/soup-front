@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { signUpSchema, type SignUpSchema } from '@/views/auth/validation';
 import { Button } from '@/components/ui/Button';
 import {
   Form,
@@ -11,24 +10,38 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/Input';
+import { reatomComponent } from '@reatom/npm-react';
+import { GeneralSchema, generalSchema } from './validation';
+import { sessionDataAtom } from '@/model';
+import { updateGeneral } from './model';
 
-type Props = {
-  onSubmit: (values: SignUpSchema) => void;
-};
-
-export const SignUp = ({ onSubmit }: Props) => {
-  const form = useForm<SignUpSchema>({
-    resolver: zodResolver(signUpSchema),
+export const GeneralView = reatomComponent(({ ctx }) => {
+  const sessionData = ctx.spy(sessionDataAtom);
+  const form = useForm<GeneralSchema>({
+    resolver: zodResolver(generalSchema),
     defaultValues: {
-      email: '',
+      email: sessionData?.email || '',
       password: '',
       confirmPassword: '',
     },
   });
 
+  const onSubmit = (values: GeneralSchema) => {
+    const data = {
+      email: values.email,
+      password: values.password,
+    };
+    updateGeneral(ctx, data);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <div className="flex justify-end">
+          <Button type="submit" className="w-32">
+            Save
+          </Button>
+        </div>
         <FormField
           control={form.control}
           name="email"
@@ -43,9 +56,6 @@ export const SignUp = ({ onSubmit }: Props) => {
                   {...field}
                 />
               </FormControl>
-              {/* <FormDescription>
-                  This is your public display name.
-                </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -55,7 +65,7 @@ export const SignUp = ({ onSubmit }: Props) => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>New Password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -64,9 +74,6 @@ export const SignUp = ({ onSubmit }: Props) => {
                   {...field}
                 />
               </FormControl>
-              {/* <FormDescription>
-                  This is your public display name.
-                </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -76,7 +83,7 @@ export const SignUp = ({ onSubmit }: Props) => {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm password</FormLabel>
+              <FormLabel>Confirm new password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -85,15 +92,11 @@ export const SignUp = ({ onSubmit }: Props) => {
                   {...field}
                 />
               </FormControl>
-              {/* <FormDescription>
-                  This is your public display name.
-                </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
-};
+}, 'GeneralView');
