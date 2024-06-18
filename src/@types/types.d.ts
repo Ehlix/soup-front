@@ -149,3 +149,9 @@ type ArtworkLike = {
 type UserArtworkLikeResponse = ArtworkLike & {
   artwork: Artwork;
 };
+
+type RejectData = {
+  error: string;
+  message: string;
+  status: number;
+};

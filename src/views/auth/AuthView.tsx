@@ -37,7 +37,7 @@ export const AuthView = reatomComponent(({ ctx }) => {
             </button>
           ))}
         </div>
-        <div className="item items flex h-full w-full flex-col  justify-center p-10">
+        <div className="item items flex h-full w-full flex-col justify-center p-10">
           {tab === 'signIn' ? (
             <SignIn
               onSubmit={(data) => {

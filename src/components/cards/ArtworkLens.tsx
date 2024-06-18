@@ -14,7 +14,11 @@ import { reatomComponent } from '@reatom/npm-react';
 import { useMemo } from 'react';
 import { artworkLikeFactory, sessionDataAtom } from '@/model';
 import { Button } from '../ui/Button';
-import { HeartFilledIcon, HeartIcon } from '@radix-ui/react-icons';
+import {
+  EnterFullScreenIcon,
+  HeartFilledIcon,
+  HeartIcon,
+} from '@radix-ui/react-icons';
 
 type Props = {
   children: {
@@ -39,7 +43,7 @@ export const ArtworkLens = reatomComponent<Props>(
         </DialogTrigger>
         <DialogContent className="min-h-[90dvh] min-w-[95dvw] p-0 xs:border-x-0">
           <div className="bg-mc-1 grid max-h-[90dvh] grid-rows-[auto_minmax(0,1fr)_auto] rounded">
-            <DialogHeader className=" flex flex-row flex-wrap-reverse items-center justify-center gap-2 p-2 pr-4">
+            <DialogHeader className="flex flex-row flex-wrap-reverse items-center justify-center gap-2 p-2 pr-4">
               <div className="flex items-center justify-center gap-2">
                 <div className="flex flex-col">
                   <DialogTitle className="text-2xl font-bold capitalize text-foreground">
@@ -105,9 +109,7 @@ export const ArtworkLens = reatomComponent<Props>(
                           artwork.userId,
                         )}
                       />
-                      <AvatarFallback delayMs={600}>
-                        {artwork.title}
-                      </AvatarFallback>
+                      <AvatarFallback>{artwork.title}</AvatarFallback>
                     </Avatar>
                   </Link>
                 </div>
@@ -115,13 +117,25 @@ export const ArtworkLens = reatomComponent<Props>(
             </DialogHeader>
             <div className="relative z-10 flex flex-col items-center gap-2 overflow-y-auto p-2 pt-0">
               {artwork.files.map((url) => (
-                <div key={url + Math.random()} className="max-h-full w-full">
+                <div
+                  key={url + Math.random()}
+                  className="relative max-h-full w-full"
+                >
                   <img
                     src={getImageUrl(url, artwork.userId)}
                     alt={artwork.title}
                     key={url}
                     className="h-full w-full object-contain"
                   />
+                  <div className="pointer-events-none absolute left-0 top-0 flex h-full w-full items-end justify-center p-2">
+                    <Link
+                      to={getImageUrl(url, artwork.userId)}
+                      target="_blank"
+                      className="pointer-events-auto"
+                    >
+                      <EnterFullScreenIcon className="size-4" />
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>

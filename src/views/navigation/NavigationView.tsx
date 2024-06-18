@@ -1,7 +1,7 @@
 import { UploadIcon } from '@radix-ui/react-icons';
 import { reatomComponent } from '@reatom/npm-react';
 import { Link } from '@tanstack/react-router';
-import { Search } from './components/CreateProfile';
+import { Search } from './components/Search';
 import { UserMenu } from './components/UserMenu';
 import * as model from '@/model';
 
@@ -9,12 +9,7 @@ export const NavigationView = reatomComponent(({ ctx }) => {
   return (
     <div className="backdrop-blur-s sticky left-0 top-0 z-50 flex h-fit w-full flex-col bg-gradient-to-b from-background/100 from-10% to-background/80 to-90% bg-blend-overlay">
       <div className="flex h-12 w-full items-center justify-between gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>
-        <Link to="/create-profile" className="[&.active]:font-bold">
-          11
-        </Link>
+        <Link to="/">Home</Link>
         <Search />
         {!ctx.spy(model.isLoggedAtom) ? (
           <Link to="/auth" className="[&.active]:font-bold">

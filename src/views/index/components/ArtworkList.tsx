@@ -6,13 +6,13 @@ import * as model from '../model';
 import { FollowCard } from '@/components/cards/FollowCard';
 
 export const ArtworkList = reatomComponent(({ ctx }) => {
-  const loading = ctx.spy(model.getArtworks.statusesAtom).isPending;
+  const loading = ctx.spy(model.artworks.statusesAtom).isPending;
   if (loading) {
     return <div>loading</div>;
   }
   return (
     <div className="grid grid-cols-6 gap-2 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1">
-      {ctx.spy(model.getArtworks.dataAtom)?.data.map((card) => (
+      {ctx.spy(model.artworks.dataAtom)?.map((card) => (
         <ArtworkLens key={card.id} artwork={card}>
           {{
             trigger: (

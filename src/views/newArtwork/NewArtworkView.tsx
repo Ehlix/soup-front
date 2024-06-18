@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/Input';
 import { Image } from '@/components/cards/Image';
 import { getImageUrl } from '@/lib/api/artworks';
 import {
-  UploadNewArtwork,
+  uploadNewArtwork,
   currentSubjectDescription,
   setCurrentSubject,
 } from './model';
@@ -46,7 +46,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
   });
 
   const onSubmit = (payload: NewArtworkSchema) => {
-    UploadNewArtwork(ctx, payload);
+    uploadNewArtwork(ctx, payload);
   };
 
   const uploadThumbnailHandler = async () => {
@@ -86,19 +86,19 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
   };
 
   return (
-    <div className="flex h-full w-full grow items-center justify-center ">
+    <div className="flex h-full w-full grow items-center justify-center">
       <div className="flex w-11/12 flex-col gap-1 lg:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="">
             <div className="mb-4 flex gap-4">
               <Button
                 disabled={
-                  loading || ctx.spy(UploadNewArtwork.statusesAtom).isPending
+                  loading || ctx.spy(uploadNewArtwork.statusesAtom).isPending
                 }
                 type="submit"
                 className="w-32"
               >
-                {ctx.spy(UploadNewArtwork.statusesAtom).isPending
+                {ctx.spy(uploadNewArtwork.statusesAtom).isPending
                   ? 'Saving...'
                   : 'Save'}
               </Button>

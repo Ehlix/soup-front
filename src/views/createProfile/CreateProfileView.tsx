@@ -71,7 +71,7 @@ export const CreateProfileView = reatomComponent(({ ctx }) => {
   };
 
   return (
-    <div className="flex h-full w-full grow items-center justify-center ">
+    <div className="flex h-full w-full grow items-center justify-center">
       <div className="flex w-3/5 flex-col gap-1 lg:w-4/5 sm:w-full">
         <div className="flex items-center text-3xl font-bold">
           Create Profile

@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { NavigationView } from '@/views/navigation/NavigationView';
+import { Toaster } from '@/components/ui/sonner';
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
 export const Route = createRootRoute({
@@ -9,12 +10,13 @@ export const Route = createRootRoute({
 function Home() {
   return (
     <>
-      <div className=" flex h-fit min-h-full w-full flex-col p-2 pt-0">
+      <div className="flex h-fit min-h-full w-full flex-col p-2 pt-0">
         <NavigationView />
         <div className="flex w-full grow flex-col">
           <Outlet />
         </div>
         {/* <TanStackRouterDevtools /> */}
+        <Toaster richColors />
       </div>
     </>
   );

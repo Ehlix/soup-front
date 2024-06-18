@@ -73,7 +73,7 @@ export const ProfileView = reatomComponent(({ ctx }) => {
   };
 
   return (
-    <div className="flex h-full w-full grow items-center justify-center ">
+    <div className="flex h-full w-full grow items-center justify-center">
       <div className="flex w-full flex-col gap-1">
         {/* <div className="flex items-center text-3xl font-bold">Profile</div> */}
         <div className="flex justify-end gap-4">

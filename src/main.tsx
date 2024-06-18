@@ -8,11 +8,10 @@ import { router } from './router';
 
 const ctx = createCtx();
 connectLogger(ctx);
-
 model.refreshSession(ctx);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <reatomContext.Provider value={ctx}>
-    <RouterProvider router={router} />
+    <RouterProvider router={router} context={{ reatomCtx: ctx }} />
   </reatomContext.Provider>,
 );
