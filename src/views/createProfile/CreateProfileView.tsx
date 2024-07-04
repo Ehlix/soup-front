@@ -63,7 +63,6 @@ export const CreateProfileView = reatomComponent(({ ctx }) => {
     const social = JSON.stringify(res.social);
     const data = { ...res.profile, social };
     createProfile(ctx, data);
-    console.log(res.profile, res.social);
   };
 
   const previewHandler = async () => {

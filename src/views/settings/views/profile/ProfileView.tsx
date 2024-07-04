@@ -69,7 +69,6 @@ export const ProfileView = reatomComponent(({ ctx }) => {
     };
     !res.profile.avatar && delete data.avatar;
     updateProfile(ctx, data);
-    console.log(res.profile, res.social);
   };
 
   return (

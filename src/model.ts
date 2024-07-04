@@ -6,11 +6,9 @@ import {
   action,
   atom,
   reatomAsync,
-  reatomResource,
   withAbort,
   withDataAtom,
   withErrorAtom,
-  withReset,
   withRetry,
   withStatusesAtom,
 } from '@reatom/framework';
@@ -89,103 +87,6 @@ export const followFactory = () => {
     checkFollow.retry(ctx);
   });
   return { follow, unFollow, checkFollow };
-};
-
-export const userFactory = () => {
-  const userIdAtom = atom('', 'userFactory.userIdAtom');
-
-  const userDataAtom = atom((ctx) => {
-    const userId = ctx.spy(userIdAtom);
-    if (!userId) return null;
-    checkFollow(ctx, userId);
-
-    const userProfile = reatomResource(async (ctx) => {
-      const userId = ctx.spy(userIdAtom);
-      if (!userId) return null;
-      const profile = await ctx.schedule(() =>
-        users.getUserProfile(userId, ctx.controller),
-      );
-      const social = profile.data.social;
-      if (social) {
-        profile.data.social = JSON.parse(social.toString());
-      }
-      return profile;
-    }, 'userProfile').pipe(withDataAtom(), withErrorAtom(), withStatusesAtom());
-
-    const userArtworks = reatomResource(async (ctx) => {
-      const userId = ctx.spy(userIdAtom);
-      if (!userId) return null;
-      return await ctx.schedule(() =>
-        artworks.getUserArtworks({ userId }, ctx.controller),
-      );
-    }, 'userArtworks').pipe(withDataAtom(), withErrorAtom());
-
-    const userLikesArtworks = reatomResource(async (ctx) => {
-      const userId = ctx.spy(userIdAtom);
-      if (!userId) return null;
-      return await ctx.schedule(() =>
-        artworks.userArtworksLikes(userId, ctx.controller),
-      );
-    }, 'userLikes').pipe(withDataAtom(), withErrorAtom(), withRetry());
-
-    const userFollowers = reatomResource(async (ctx) => {
-      const userId = ctx.spy(userIdAtom);
-      if (!userId) return null;
-      return await ctx.schedule(() =>
-        users.userFollowers(userId, ctx.controller),
-      );
-    }, 'userFollowers').pipe(
-      withDataAtom(),
-      withErrorAtom(),
-      withRetry(),
-      withStatusesAtom(),
-    );
-
-    const userFollows = reatomResource(async (ctx) => {
-      const userId = ctx.spy(userIdAtom);
-      if (!userId) return null;
-      return await ctx.schedule(() =>
-        users.userFollows(userId, ctx.controller),
-      );
-    }, 'userFollows').pipe(
-      withDataAtom(),
-      withErrorAtom(),
-      withRetry(),
-      withStatusesAtom(),
-    );
-
-    return {
-      userProfile,
-      userArtworks,
-      userLikesArtworks,
-      userFollowers,
-      userFollows,
-    };
-  }, 'userDataAtom').pipe(withReset());
-
-  const getUserById = action((ctx, userId: string) => {
-    // userIdAtom(ctx, null);
-    // userDataAtom.reset(ctx);
-    userIdAtom(ctx, userId);
-  }, 'userFactory.getUserById');
-
-  const { follow, unFollow, checkFollow } = followFactory();
-  follow.onFulfill.onCall((ctx) => {
-    ctx.get(userDataAtom)?.userFollowers.retry(ctx);
-    ctx.get(userDataAtom)?.userFollows.retry(ctx);
-  });
-  // follow.onSettle.onCall((ctx) => {
-  //   checkFollow(ctx, ctx.get(userIdAtom));
-  // });
-  unFollow.onFulfill.onCall((ctx) => {
-    ctx.get(userDataAtom)?.userFollowers.retry(ctx);
-    ctx.get(userDataAtom)?.userFollows.retry(ctx);
-  });
-  // unFollow.onSettle.onCall((ctx) => {
-  //   checkFollow(ctx, ctx.get(userIdAtom));
-  // });
-
-  return { userDataAtom, getUserById, follow, unFollow, checkFollow };
 };
 
 export const artworkLikeFactory = (ctx: Ctx, artworkId: string) => {

@@ -45,7 +45,6 @@ export const Profile = reatomComponent<Props>(({ ctx, form }) => {
       const file = input.files[0];
       const data = await uploadImage(ctx, file);
       if (!data) return;
-      console.log(data);
       form.setValue('avatar', data.data.file, { shouldValidate: true });
       // const reader = new FileReader();
       // reader.readAsDataURL(file);

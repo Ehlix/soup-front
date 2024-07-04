@@ -97,12 +97,14 @@ export const artworkLikes = (
 };
 
 export const userArtworksLikes = (
-  userId: string,
+  data: UserArtworkLikeParams,
   controller?: AbortController,
 ): Promise<AxiosResponse<UserArtworkLikeResponse[]>> => {
   return api.request(
     {
-      url: `/artwork-likes/user?userId=${userId}`,
+      method: 'post',
+      url: `/artwork-likes/user`,
+      data: data,
     },
     controller,
   );

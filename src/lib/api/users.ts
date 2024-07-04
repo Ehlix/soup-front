@@ -27,6 +27,20 @@ export const updateLoginData = (
   );
 };
 
+export const searchProfile = (
+  data: SearchProfileParams,
+  controller?: AbortController,
+): Promise<AxiosResponse<UserProfileResponse[]>> => {
+  return api.request(
+    {
+      method: 'post',
+      url: '/user-profile/search',
+      data,
+    },
+    controller,
+  );
+};
+
 export const createUserProfile = (
   data: CreateUserProfileParams,
   controller?: AbortController,
@@ -82,24 +96,28 @@ export const unFollowUser = (
 };
 
 export const userFollows = (
-  userId: string,
+  data: UserFollowsParams,
   controller?: AbortController,
 ): Promise<AxiosResponse<FollowResponse[]>> => {
   return api.request(
     {
-      url: `/user-follows/user-follows?userId=${userId}`,
+      method: 'post',
+      url: `/user-follows/user-follows`,
+      data,
     },
     controller,
   );
 };
 
 export const userFollowers = (
-  userId: string,
+  data: UserFollowsParams,
   controller?: AbortController,
 ): Promise<AxiosResponse<FollowResponse[]>> => {
   return api.request(
     {
-      url: `/user-follows/user-followers?userId=${userId}`,
+      method: 'post',
+      url: `/user-follows/user-followers`,
+      data,
     },
     controller,
   );
@@ -110,6 +128,6 @@ export const checkFollow = async (
   followId: string,
   controller?: AbortController,
 ) => {
-  const follows = await userFollows(userId, controller);
+  const follows = await userFollows({ userId }, controller);
   return follows.data.some((f) => f.followId === followId);
 };

@@ -10,16 +10,18 @@ import { Link } from '@tanstack/react-router';
 
 type Props = {
   data: FollowResponse;
+  mode: 'follower' | 'follow';
 };
 
-export const FollowerCard = reatomComponent<Props>(({ ctx, data }) => {
+export const FollowerCard = reatomComponent<Props>(({ ctx, data, mode }) => {
   const sessionUserProfile = ctx.spy(sessionDataAtom)?.userProfile;
   const session = useMemo(() => {
     if (!sessionUserProfile) {
       return null;
     }
+    const checkId = mode === 'follower' ? data.followId : data.userId;
     const { checkFollow } = followFactory();
-    checkFollow(ctx, data.followId);
+    checkFollow(ctx, checkId);
     return checkFollow;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionUserProfile]);
@@ -28,47 +30,47 @@ export const FollowerCard = reatomComponent<Props>(({ ctx, data }) => {
     ? ctx.spy(session.statusesAtom).isPending
     : false;
 
-  const isSessionUser =
-    ctx.spy(sessionDataAtom)?.userProfile?.userId ===
-    data.user.userProfile.userId;
+  const candidateProfile = data[mode]?.userProfile;
+  if (!candidateProfile) return null;
+  const isSessionUser = sessionUserProfile?.userId === candidateProfile?.userId;
+
   return (
     <div>
       <div className="flex items-center gap-2">
         <Avatar className="size-16">
           <AvatarImage
-            src={getImageUrl(
-              data.user.userProfile.avatar,
-              data.user.userProfile.userId,
-            )}
+            src={getImageUrl(candidateProfile.avatar, candidateProfile.userId)}
           />
           <AvatarFallback>: (</AvatarFallback>
         </Avatar>
         <div>
           <h1 className="text-xl font-bold capitalize">
-            {data.user.userProfile.name}
+            {candidateProfile.name}
           </h1>
           <p className="text-md capitalize text-muted-foreground">
-            {data.user.userProfile.headline}
+            {candidateProfile.headline}
           </p>
-          {session && !isSessionUser ? (
-            isFollow ? (
-              <Button
-                disabled={followLoading}
-                onClick={() => model.unFollow(ctx, data.followId)}
-                variant="ghost"
-                className="w-full"
-              >
-                <CheckIcon className="size-5" /> You follow
-              </Button>
-            ) : (
-              <Button
-                disabled={followLoading}
-                onClick={() => model.follow(ctx, data.followId)}
-                className="w-full"
-              >
-                Follow
-              </Button>
-            )
+          {session ? (
+            !isSessionUser ? (
+              isFollow ? (
+                <Button
+                  disabled={followLoading}
+                  onClick={() => model.unFollow(ctx, candidateProfile.userId)}
+                  variant="ghost"
+                  className="w-full"
+                >
+                  <CheckIcon className="size-5" /> You follow
+                </Button>
+              ) : (
+                <Button
+                  disabled={followLoading}
+                  onClick={() => model.follow(ctx, candidateProfile.userId)}
+                  className="w-full"
+                >
+                  Follow
+                </Button>
+              )
+            ) : null
           ) : (
             <Link to="/auth">
               <Button>Follow</Button>

@@ -66,6 +66,10 @@ type ArtworkResponse = Artwork & {
 
 type UserProfileResponse = UserProfile;
 
+type SearchProfileParams = {
+  username: string;
+};
+
 type Res = Card & { user: User; userProfile: UserProfile };
 
 type SignInParams = {
@@ -131,8 +135,19 @@ type UserFollow = {
   updatedAt?: string;
 };
 
+type UserFollowsParams = {
+  userId?: string;
+  site?: string;
+  offset?: number;
+  limit?: number;
+  dateStart?: string;
+};
 type FollowResponse = UserFollow & {
-  user: {
+  follow?: {
+    id: string;
+    userProfile: UserProfile;
+  };
+  follower?: {
     id: string;
     userProfile: UserProfile;
   };
@@ -144,6 +159,12 @@ type ArtworkLike = {
   userId: string;
   createdAt?: string;
   updatedAt?: string;
+};
+type UserArtworkLikeParams = {
+  userId: string;
+  offset?: number;
+  limit?: number;
+  dateStart?: string;
 };
 
 type UserArtworkLikeResponse = ArtworkLike & {

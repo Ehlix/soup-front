@@ -1,4 +1,4 @@
-import { getUserById, userDataAtom } from '@/views/user/model';
+import { getUserById, userProfile } from '@/views/user/model';
 import { reatomComponent } from '@reatom/npm-react';
 import { Outlet, useParams } from '@tanstack/react-router';
 import { useEffect } from 'react';
@@ -18,13 +18,11 @@ export const UserView = reatomComponent(({ ctx }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const userData = ctx.spy(userDataAtom);
-  if (!userData) return null;
-  const isLoading = ctx.spy(userData.userProfile.statusesAtom).isPending;
+  const isLoading = ctx.spy(userProfile.statusesAtom).isPending;
   if (isLoading) {
     return <Loading />;
   }
-  if (ctx.spy(userData.userProfile.errorAtom)) {
+  if (ctx.spy(userProfile.errorAtom)) {
     return <Notfound />;
   }
   return (

@@ -8,14 +8,12 @@ import { CheckIcon } from '@radix-ui/react-icons';
 import { Link } from '@tanstack/react-router';
 
 export const UserInfo = reatomComponent(({ ctx }) => {
-  const userData = ctx.spy(model.userDataAtom);
-  if (!userData) return null;
-  const userProfile = ctx.spy(userData.userProfile.dataAtom)?.data;
+  const userProfile = ctx.spy(model.userProfile.dataAtom)?.data;
   if (!userProfile) return null;
-  const userFollowers = ctx.spy(userData.userFollowers.dataAtom)?.data;
-  const userFollows = ctx.spy(userData.userFollows.dataAtom)?.data;
+  const userFollowers = ctx.spy(model.userFollowers.dataAtom)?.data;
+  const userFollows = ctx.spy(model.userFollows.dataAtom)?.data;
   if (!userFollowers || !userFollows) return null;
-  const isFollowed = ctx.spy(model.checkFollow.dataAtom);
+  const isFollowed = ctx.spy(model.sessionUserFollowed.dataAtom);
   const sessionUserProfile = ctx.spy(sessionDataAtom)?.userProfile;
   const isCurrentUserPage = sessionUserProfile?.userId === userProfile.userId;
   const followLoading = ctx.spy(model.checkFollow.statusesAtom).isPending;
