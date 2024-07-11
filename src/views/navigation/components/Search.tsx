@@ -4,6 +4,7 @@ import {
   DialogClose,
   DialogContent,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
@@ -13,6 +14,7 @@ import { Link } from '@tanstack/react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getImageUrl } from '@/lib/api/artworks';
 import { cn } from '@/lib/utils';
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 export const Search = reatomComponent(({ ctx }) => {
   return (
@@ -27,12 +29,14 @@ export const Search = reatomComponent(({ ctx }) => {
         <DialogContent className="top-14 min-h-fit min-w-[85dvw] translate-y-0 p-0 xs:border-x-0">
           <div className="bg-mc-1 grid grid-rows-[auto_minmax(0,1fr)_auto] rounded">
             <DialogHeader className="pointer-events-none absolute -top-[3.3rem] flex w-full flex-row flex-wrap-reverse items-center justify-center gap-2 p-2">
-              <Input
-                className="pointer-events-auto min-w-fit max-w-96 bg-background outline-none transition-all sm:max-w-72 xs:max-w-56"
-                placeholder="Search"
-                value={ctx.spy(model.searchValue)}
-                onChange={(e) => model.changeSearchValue(ctx, e.target.value)}
-              />
+              <DialogTitle>
+                <Input
+                  className="pointer-events-auto min-w-fit max-w-96 bg-background outline-none transition-all sm:max-w-72 xs:max-w-56"
+                  placeholder="Search"
+                  value={ctx.spy(model.searchValue)}
+                  onChange={(e) => model.changeSearchValue(ctx, e.target.value)}
+                />
+              </DialogTitle>
             </DialogHeader>
             <div
               className={cn(
@@ -59,6 +63,9 @@ export const Search = reatomComponent(({ ctx }) => {
               ))}
             </div>
           </div>
+          <DialogDescription className="sr-only">
+            Search result
+          </DialogDescription>
         </DialogContent>
       </Dialog>
     </div>

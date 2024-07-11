@@ -16,7 +16,18 @@ function Home() {
           <Outlet />
         </div>
         {/* <TanStackRouterDevtools /> */}
-        <Toaster richColors />
+        <Toaster
+          toastOptions={{
+            classNames: {
+              default: 'bg-border border-none text-base',
+              error: 'bg-destructive border-destructive text-green',
+              success: 'bg-emerald-300',
+              warning: 'bg-orange-300',
+              info: 'bg-border',
+              title: 'text-background',
+            },
+          }}
+        />
       </div>
     </>
   );

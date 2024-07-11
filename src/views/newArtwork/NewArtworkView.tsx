@@ -12,7 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { Image } from '@/components/cards/Image';
 import { getImageUrl } from '@/lib/api/artworks';
@@ -23,7 +23,7 @@ import {
 } from './model';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { mediumList, subjectList } from '@/lib/static/artworkMeta';
-import { Textarea } from '@/components/ui/Textarea';
+import { Textarea } from '@/components/ui/textarea';
 import { UploadImage } from './components/UploadImage';
 
 export const NewArtworkView = reatomComponent(({ ctx }) => {

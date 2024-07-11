@@ -8,7 +8,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { reatomComponent } from '@reatom/npm-react';
 import { GeneralSchema, generalSchema } from './validation';
@@ -36,7 +36,10 @@ export const GeneralView = reatomComponent(({ ctx }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-full flex-col gap-1"
+      >
         <div className="flex justify-end">
           <Button type="submit" className="w-32">
             Save
