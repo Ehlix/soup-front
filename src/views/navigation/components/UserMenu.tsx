@@ -48,8 +48,11 @@ export const UserMenu = reatomComponent(({ ctx }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-4 w-56">
         <DropdownMenuLabel>
-          <Link to={`/${userProfile?.site}`} className="text-lg">
-            {userProfile?.name}
+          <Link
+            to={`/${userProfile?.site}`}
+            className="text-lg hover:text-foreground/85"
+          >
+            <h2>{userProfile?.name}</h2>
           </Link>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -65,7 +68,7 @@ export const UserMenu = reatomComponent(({ ctx }) => {
           onClick={() => model.logout(ctx)}
           className="cursor-pointer"
         >
-          Sign out
+          <span className="text-accent">Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

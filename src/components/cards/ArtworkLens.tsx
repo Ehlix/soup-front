@@ -63,7 +63,7 @@ export const ArtworkLens = reatomComponent<Props>(
                         className="rounded-full text-accent"
                         onClick={() => dislike(ctx)}
                       >
-                        <HeartFilledIcon />
+                        <HeartFilledIcon className="size-6" />
                       </Button>
                     ) : (
                       <Button
@@ -73,13 +73,13 @@ export const ArtworkLens = reatomComponent<Props>(
                         className="rounded-full text-accent"
                         onClick={() => like(ctx)}
                       >
-                        <HeartIcon />
+                        <HeartIcon className="size-6" />
                       </Button>
                     )
                   ) : (
                     <Link to="/auth">
                       <Button variant="like" size="icon">
-                        <HeartIcon />
+                        <HeartIcon className="size-6" />
                       </Button>
                     </Link>
                   )}

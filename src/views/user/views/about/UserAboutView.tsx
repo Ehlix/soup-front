@@ -11,7 +11,7 @@ export const UserAboutView = reatomComponent(({ ctx }) => {
       </div>
       <div>
         <h4>Location:</h4>
-        <p>
+        <p className="capitalize">
           {profile?.country}, {profile?.city}
         </p>
       </div>

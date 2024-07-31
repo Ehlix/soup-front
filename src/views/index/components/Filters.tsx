@@ -2,7 +2,6 @@ import { reatomComponent } from '@reatom/npm-react';
 import * as model from '../model';
 import { subjectList } from '@/lib/static/artworkMeta';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
 import {
   Carousel,
   CarouselContent,
@@ -17,9 +16,8 @@ export const Filters = reatomComponent(({ ctx }) => {
     <div className="flex w-full items-center justify-center gap-1">
       <Button
         onClick={() => model.setParams(ctx, 'subject', '')}
-        className={cn('h-12 w-14', {
-          'bg-accent text-accent-foreground hover:bg-accent/90': !currentFilter,
-        })}
+        className="h-12 w-14"
+        variant={currentFilter === '' ? 'default' : 'outline'}
       >
         All
       </Button>
@@ -38,14 +36,11 @@ export const Filters = reatomComponent(({ ctx }) => {
                 className="basis-1/6 px-1 xl:basis-1/5 lg:basis-1/4"
               >
                 <Button
+                  variant={
+                    item.params === currentFilter ? 'default' : 'outline'
+                  }
                   onClick={() => model.setParams(ctx, 'subject', item.params)}
-                  className={cn(
-                    'line-clamp-2 h-12 w-full text-wrap py-1 capitalize',
-                    {
-                      'bg-accent text-accent-foreground hover:bg-accent/90':
-                        item.params === currentFilter,
-                    },
-                  )}
+                  className="line-clamp-2 h-12 w-full text-wrap py-1 capitalize"
                 >
                   {item.name}
                 </Button>

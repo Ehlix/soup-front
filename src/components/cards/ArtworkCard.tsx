@@ -11,16 +11,18 @@ export const ArtworkCard = (props: {
   );
 
   return (
-    <div className={cn(props.className, 'group relative overflow-hidden')}>
-      <div className="absolute bottom-0 left-0 opacity-0 transition-opacity group-hover:opacity-100">
-        <h2>{props.artwork.title || 'Card title'}</h2>
+    <div
+      className={cn(props.className, 'group relative overflow-hidden rounded')}
+    >
+      <div className="absolute bottom-0 left-0 z-20 h-fit w-full px-2 text-left opacity-0 transition-opacity group-hover:opacity-100">
+        <h3>{props.artwork.title || ''}</h3>
       </div>
       <div className="h-full w-full">
         {image && (
           <img
             src={image}
             alt={props.artwork.title}
-            className="h-full w-full object-cover"
+            className="z-10 h-full w-full object-cover transition-transform group-hover:scale-110"
           />
         )}
       </div>

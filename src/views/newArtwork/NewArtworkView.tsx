@@ -69,7 +69,7 @@ export const NewArtworkView = reatomComponent(({ ctx }) => {
   ) => {
     if (form.getValues(formField).includes(value)) {
       form.setValue(
-        'medium',
+        formField,
         form.getValues(formField).filter((item) => item !== value),
         { shouldValidate: true },
       );
